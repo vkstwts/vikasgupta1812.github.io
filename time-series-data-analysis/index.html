@@ -1,39 +1,48 @@
-
+<!DOCTYPE html>
+<html>
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <title>Time Series Data analysis</title>
-    <meta name="description" content="">
+    <meta name="description" content="" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/css/font-awesome.min.css?v=18cf216c79" />
+    <link rel="stylesheet" href="../assets/css/foundation.min.css?v=18cf216c79" />
+    <link rel="stylesheet" href="../assets/css/fauxghost.min.css?v=18cf216c79" />
 
-    <link rel="shortcut icon" href="../favicon.ico">
+    <script src="../assets/js/modernizr.min.js?v=18cf216c79"></script>
+    <script src="../assets/js/config.min.js?v=18cf216c79"></script>
 
-    <link rel="stylesheet" type="text/css" href="../assets/css/screen.css?v=7c0c3ad0b3">
-    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic%7COpen+Sans:700,400">
+    <link rel="icon" sizes="16x16 32x32 48x48 64x64" href="../assets/favicons/favicon.ico?v=18cf216c79" />
+    <link rel="apple-touch-icon" href="../assets/favicons/touch-icon-iphone.png?v=18cf216c79">
+    <link rel="apple-touch-icon" sizes="76x76" href="../assets/favicons/touch-icon-ipad.png?v=18cf216c79">
+    <link rel="apple-touch-icon" sizes="120x120" href="../assets/favicons/touch-icon-iphone-retina.png?v=18cf216c79">
+    <link rel="apple-touch-icon" sizes="152x152" href="../assets/favicons/touch-icon-ipad-retina.png?v=18cf216c79">
 
-    <link rel="canonical" href="index.html">
+    <link rel="canonical" href="index.html" />
     
-    <meta property="og:site_name" content="Data Science and Machine Learning">
-    <meta property="og:type" content="article">
-    <meta property="og:title" content="Time Series Data analysis">
-    <meta property="og:description" content='Time Series Data analysis   Read the data kings &amp;lt;- scan("http://robjhyndman.com/tsdldata/misc/kings.dat",skip=3)   kings   ##  [1] 60 43 67 50 56 42 50 65 68 43 65 34 47 34 49 41 13 35...'>
-    <meta property="og:url" content="http://localhost:2368/time-series-data-analysis/">
-    <meta property="article:published_time" content="2014-11-23T20:53:27.021Z">
-    <meta property="article:modified_time" content="2014-11-23T20:59:57.451Z">
+    <meta property="og:site_name" content="Data Analysis and Machine Learning" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Time Series Data analysis" />
+    <meta property="og:description" content="Time Series Data analysis   Read the data kings &amp;lt;- scan(&quot;http://robjhyndman.com/tsdldata/misc/kings.dat&quot;,skip=3)   kings   ##  [1] 60 43 67 50 56 42 50 65 68 43 65 34 47 34 49 41 13 35..." />
+    <meta property="og:url" content="http://localhost:2368/time-series-data-analysis/" />
+    <meta property="article:published_time" content="2014-11-23T20:53:27.021Z" />
+    <meta property="article:modified_time" content="2014-11-23T20:59:57.451Z" />
     
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Time Series Data analysis">
-    <meta name="twitter:description" content='Time Series Data analysis   Read the data kings &amp;lt;- scan("http://robjhyndman.com/tsdldata/misc/kings.dat",skip=3)   kings   ##  [1] 60 43 67 50 56 42 50 65 68 43 65 34 47 34 49 41 13 35...'>
-    <meta name="twitter:url" content="http://localhost:2368/time-series-data-analysis/">
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Time Series Data analysis" />
+    <meta name="twitter:description" content="Time Series Data analysis   Read the data kings &amp;lt;- scan(&quot;http://robjhyndman.com/tsdldata/misc/kings.dat&quot;,skip=3)   kings   ##  [1] 60 43 67 50 56 42 50 65 68 43 65 34 47 34 49 41 13 35..." />
+    <meta name="twitter:url" content="http://localhost:2368/time-series-data-analysis/" />
     
     <script type="application/ld+json">
 {
     "@context": "http://schema.org",
     "@type": "Article",
-    "publisher": "Data Science and Machine Learning",
+    "publisher": "Data Analysis and Machine Learning",
     "author": {
         "@type": "Person",
         "name": "Vikas Gupta",
@@ -48,34 +57,203 @@
 }
     </script>
 
-    <meta name="generator" content="Ghost 0.5">
-    <link rel="alternate" type="application/rss+xml" title="Data Science and Machine Learning" href="../rss/index.html">
+    <meta name="generator" content="Ghost 0.5" />
+    <link rel="alternate" type="application/rss+xml" title="Data Analysis and Machine Learning" href="../rss.1" />
+
+    <script>
+      if (fauxGhostConfig.google_analytics_tracking_id)
+      {
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', fauxGhostConfig.google_analytics_tracking_id, 'auto');
+        ga('send', 'pageview');
+      }
+    </script>
+
+    <script type="text/javascript">
+      link = document.createElement( "link" );
+      link.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.2/styles/' + fauxGhostConfig.highlight_style + '.min.css';
+      link.type = "text/css";
+      link.rel = "stylesheet";
+      link.media = "screen,print";
+
+      document.getElementsByTagName( "head" )[0].appendChild( link );
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.2/highlight.min.js"></script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
 </head>
 <body class="post-template">
+    <div id="at_page_surround">
+      <div id="at_body">
+        <div class='off-canvas-wrap' data-offcanvas>
+          <div class='inner-wrap' id="menu_inner_wrap">
+            <a class='at_off_canvas_toggle left-off-canvas-toggle' href='index.html#' id="show_menu_link"><span class='fa fa-bars'></span></a>
 
-    
+            
+<aside class="left-off-canvas-menu" id="left-off-canvas-menu">
+	<ul class="off-canvas-list" id="off-canvas-list">
+		<li><label id="main_menu_label"></label></li>
+</ul>
+</aside>
+<script>
+	var aside = document.getElementById('left-off-canvas-menu');
+	if (fauxGhostConfig.sidebar)
+	{
+		document.getElementById('main_menu_label').appendChild( document.createTextNode(fauxGhostConfig.sidebar.title) );
 
+		var list = document.getElementById('off-canvas-list');
 
-<header class="main-header post-head no-cover">
-    <nav class="main-nav  clearfix">
-        <a class="back-button icon-arrow-left" href="../">Home</a>
-        <a class="subscribe-button icon-feed" href="../rss/index.rss">Subscribe</a>
-    </nav>
-</header>
+		fauxGhostConfig.sidebar.items.forEach(function(item){
+			var newHtml = '<li><a class="at_menu_item" href="http://localhost:2368/time-series-data-analysis/';			if&#32;(item.url)				newHtml&#32;=&#32;newHtml&#32;+&#32;item.url&#32;+&#32;'">';
+			else if (item.tag)
+				newHtml = newHtml + fauxGhostConfig.site_url + '/tag/' + item.tag + '">';
 
-<main class="content" role="main">
+			if (item.faicon)
+				newHtml = newHtml + '<span class="fa ' + item.faicon + '"></span>'
+			else if (item.image)
+				newHtml = newHtml + '<img src="http://localhost:2368/assets/images/'&#32;+&#32;item.image&#32;+&#32;'" height="16px" width="16px"/>'
 
-    <article class="post">
+			newHtml=newHtml + '&nbsp;' + item.title + '</a></li>';
 
-        <header class="post-header">
-            <h1 class="post-title">Time Series Data analysis</h1>
-            <section class="post-meta">
-                <time class="post-date" datetime="2014-11-23">23 November 2014</time> 
-            </section>
-        </header>
+			list.innerHTML = list.innerHTML + newHtml;
+		});
+	}
+</script>
 
-        <section class="post-content">
-            <h1 id="timeseriesdataanalysis">Time Series Data analysis  </h1>
+<div id="at_header">
+	<div class="row hide-for-small-only header_row_width">
+		<div class="medium-5 columns end">
+			<a href="../index.html"><div class="at_logo_text">Data Analysis and Machine Learning</div></a>
+		</div>
+		<div class="medium-4 columns text-right end">
+			<div class="at_icon_menu" id="top_social_menu">
+				<a class="at_icon_menu_item" href="../rss.1" id="top_rss"><span class="fa fa-rss"></span></a>
+			</div>
+		</div>
+		<div class="medium-2 columns end">
+			<div id="at_search">
+				<div class="row">
+					<div class="large-12 large-centered columns">
+						<input class="at_search_input" type="text" placeholder="Search...">
+					</div>
+				</div>
+				<div class="at_search_results"></div>
+			</div>		</div>
+	</div>
+
+	<div class="row show-for-small-only">
+		<div class="small-9 small-centered columns">
+			<a href="../index.html"><div class="at_logo_text">Data Analysis and Machine Learning</div></a>
+		</div>
+	</div>
+
+	<div class="row show-for-small-only">
+			<div id="at_search">
+				<div class="row">
+					<div class="large-12 large-centered columns">
+						<input class="at_search_input" type="text" placeholder="Search...">
+					</div>
+				</div>
+				<div class="at_search_results"></div>
+			</div>	</div>
+</div>
+
+<script>
+  if (fauxGhostConfig.socialLinks)
+  {
+    fauxGhostConfig.socialLinks.forEach(function(link)
+    {
+      var extraHtml = '<a class="at_icon_menu_item" href="http://localhost:2368/time-series-data-analysis/'&#32;+&#32;link.href&#32;+&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;'" ><span class="fa ' + link.icon + '"></span></a>';
+      var div = document.getElementById('top_social_menu');
+      div.innerHTML = extraHtml + div.innerHTML;
+    });
+  }
+
+	if (!fauxGhostConfig.rss)
+	{
+		var div = document.getElementById('top_social_menu');
+		var rssDiv = document.getElementById('top_rss');
+		div.removeChild(rssDiv);
+	}
+</script>
+
+<div id="at_showcase">
+	<div class="at_blog_cover" >
+	    <div class="at_showcase_overlay ">
+			<div class="row">
+				<div class="large-12 large-centered columns">
+					<div class="at_block">
+						<div class="text-center">
+				            <div class="at_block">
+				                <article class="post">
+				                    <div class="at_post_header">
+				                        <h2 class="at_post_title">Time Series Data analysis</h2>
+				                    </div>
+				                    <div class="at_post_meta">
+				                        <span class="at_featured_post"><span class="fa fa-bookmark"></span> <span>Featured</span></span>
+				                        <span class="at_post_author"><span class="fa fa-user"></span> <a href="http://localhost:2368/author/vikas/">Vikas Gupta</a></span>
+				                        <time class="at_post_time" datetime="2014-11-23"><span class="fa fa-calendar"></span> 23 Nov 2014</time>
+				                        <span class="at_post_tags"> </span>
+				                    </div>
+					                <div class="at_post_share" id="share">
+					                    <h6 class="at_post_share_title">Share this post</h6>
+					                    <a class="at_post_share_icon" href="http://twitter.com/share?text=Time%20Series%20Data%20analysis&url=http://localhost:2368/time-series-data-analysis/"
+					                        onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;"
+																	id="share_twitter">
+					                        <span class="fa fa-twitter-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:2368/time-series-data-analysis/"
+					                        onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;"
+																	id="share_facebook">
+					                        <span class="fa fa-facebook-square"></span>
+					                    </a>
+					                    <a class="at_post_share_icon" href="https://plus.google.com/share?url=http://localhost:2368/time-series-data-analysis/"
+					                       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;"
+																id="share_googleplus">
+					                        <span class="fa fa-google-plus-square"></span>
+					                    </a>
+					                </div>
+
+													<script>
+														if (fauxGhostConfig.sharing)
+														{
+															document.getElementById('share').style.display = 'block';
+
+															if (!fauxGhostConfig.sharing.twitter)
+																document.getElementById('share').removeChild(document.getElementById('share_twitter'));
+
+															if (!fauxGhostConfig.sharing.facebook)
+																document.getElementById('share').removeChild(document.getElementById('share_facebook'));
+
+															if (!fauxGhostConfig.sharing.googlePlus)
+																document.getElementById('share').removeChild(document.getElementById('share_googleplus'));
+														}
+														else
+															document.getElementById('share').style.display = 'none';
+													</script>
+
+				                </article>
+				            </div>
+						</div>
+					</div>
+				</div>
+			</div>
+	    </div>
+	</div>
+</div>
+
+<div id="at_mainbody" class="at_post" role="main">
+    <div class="row">
+        <div class="large-12 columns">
+            <div class="at_block">
+                <article class="post">
+                  <div class="at_post_content">
+                      <h1 id="timeseriesdataanalysis">Time Series Data analysis  </h1>
 
 <p>Read the data</p>
 
@@ -150,7 +328,7 @@ souvenirtimeseries
 <pre><code class="language-r">plot.ts(kingstimeseries)  
 </code></pre>
 
-<p><img src="../content/images/2014/11/unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7"></p>
+<p><img src="../content/images/2014/11/unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7" /></p>
 
 <p>This time series could probably be described using an <code>additive model</code>, since the random fluctuations in the data are roughly constant in size over time.</p>
 
@@ -159,7 +337,7 @@ souvenirtimeseries
 <pre><code class="language-r">plot.ts(birthstimeseries)  
 </code></pre>
 
-<p><img src="../content/images/2014/11/unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8"></p>
+<p><img src="../content/images/2014/11/unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8" /></p>
 
 <p>There seems to be <code>seasonal variation</code> in the number of births per month: there is a peak every summer, and a trough every winter. Again, it seems that this time series could probably be described using an <code>additive model</code>, as the seasonal fluctuations are roughly constant in size over time and do not seem to depend on the level of the time series, and the random fluctuations also seem to be roughly constant in size over time.</p>
 
@@ -168,7 +346,7 @@ souvenirtimeseries
 <pre><code class="language-r">plot.ts(souvenirtimeseries)  
 </code></pre>
 
-<p><img src="../content/images/2014/11/unnamed-chunk-9-1.png" alt="plot of chunk unnamed-chunk-9"></p>
+<p><img src="../content/images/2014/11/unnamed-chunk-9-1.png" alt="plot of chunk unnamed-chunk-9" /></p>
 
 <p>an <code>additive model</code> is not appropriate for describing this time series, since the size of the seasonal fluctuations and random fluctuations seem to increase with the level of the time series. Thus, we may need to <code>transform</code> the time series in order to get a transformed time series that can be described using an additive model. </p>
 
@@ -176,7 +354,7 @@ souvenirtimeseries
 plot.ts(logsouvenirtimeseries)  
 </code></pre>
 
-<p><img src="../content/images/2014/11/unnamed-chunk-10-1.png" alt="plot of chunk unnamed-chunk-10"></p>
+<p><img src="../content/images/2014/11/unnamed-chunk-10-1.png" alt="plot of chunk unnamed-chunk-10" /></p>
 
 <p>The size of the seasonal fluctuations and random fluctuations in the log-transformed time series seem to be roughly constant over time, and do not depend on the level of the time series. Thus, the log- transformed time series can probably be described using an additive model.</p>
 
@@ -198,7 +376,7 @@ kingstimeseriesSMA3  &lt;- SMA(kingstimeseries, n=3)
 plot.ts(kingstimeseriesSMA3)  
 </code></pre>
 
-<p><img src="../content/images/2014/11/unnamed-chunk-12-1-1.png" alt="plot of chunk unnamed-chunk-12"></p>
+<p><img src="../content/images/2014/11/unnamed-chunk-12-1-1.png" alt="plot of chunk unnamed-chunk-12" /></p>
 
 <p>There still appears to be quite a lot of random fluctuations in the time series smoothed using a simple moving average of order 3. Thus, to estimate the trend component more accurately, we might want to try smoothing the data with a simple moving average of a higher order. This takes a little bit of trial-and-error, to find the right amount of smoothing. For example, we can try using a simple moving average of order 8:</p>
 
@@ -208,7 +386,7 @@ kingstimeseriesSMA3  &lt;- SMA(kingstimeseries, n=8)
 plot.ts(kingstimeseriesSMA3)  
 </code></pre>
 
-<p><img src="../content/images/2014/11/unnamed-chunk-13-1.png" alt="plot of chunk unnamed-chunk-13"></p>
+<p><img src="../content/images/2014/11/unnamed-chunk-13-1.png" alt="plot of chunk unnamed-chunk-13" /></p>
 
 <p>The data smoothed with a <code>simple moving average</code> of order 8 gives a clearer picture of the trend component, and we can see that the age of death of the English kings seems to have decreased from about 55 years old to about 38 years old during the reign of the first 20 kings, and then increased after that to about 73 years old by the end of the reign of the 40th king in the time series.</p>
 
@@ -218,13 +396,13 @@ plot.ts(kingstimeseriesSMA3)
 
 <p>To estimate the trend component and seasonal component of a seasonal time series that can be described using an additive model, we can use the “decompose()” function in R. This function estimates the trend, seasonal, and irregular components of a time series that can be described using an additive model.</p>
 
-<p>The function <code>decompose()</code> returns a list object as its result, where the estimates of the seasonal component, trend component and irregular component are stored in named elements of that list objects, called <code>seasonal</code>, <code>trend</code>, and <code>random</code> respectively. <br>
+<p>The function <code>decompose()</code> returns a list object as its result, where the estimates of the seasonal component, trend component and irregular component are stored in named elements of that list objects, called <code>seasonal</code>, <code>trend</code>, and <code>random</code> respectively. <br />
 For example, as discussed above, the time series of the number of births per month in New York city is seasonal with a peak every summer and trough every winter, and can probably be described using an additive model since the seasonal and random fluctuations seem to be roughly constant in size over time:</p>
 
 <pre><code class="language-r">plot.ts(birthstimeseries)  
 </code></pre>
 
-<p><img src="../content/images/2014/11/unnamed-chunk-14.png" alt="plot of chunk unnamed-chunk-14"></p>
+<p><img src="../content/images/2014/11/unnamed-chunk-14.png" alt="plot of chunk unnamed-chunk-14" /></p>
 
 <p>To estimate the trend, seasonal and irregular components of this time series, we type:</p>
 
@@ -260,7 +438,7 @@ For example, as discussed above, the time series of the number of births per mon
 <pre><code class="language-r">plot(birthstimeseriescomponents)  
 </code></pre>
 
-<p><img src="../content/images/2014/11/unnamed-chunk-17-1.png" alt="plot of chunk unnamed-chunk-17"></p>
+<p><img src="../content/images/2014/11/unnamed-chunk-17-1.png" alt="plot of chunk unnamed-chunk-17" /></p>
 
 <p>We see that the estimated trend component shows a small decrease from about 24 in 1947 to about 22 in 1948, followed by a steady increase from then on to about 27 in 1959.</p>
 
@@ -280,7 +458,7 @@ plot(birthstimeseriescomponents$seasonal)
 plot(birthstimeseriesseasonallyadjusted)  
 </code></pre>
 
-<p><img src="../content/images/2014/11/unnamed-chunk-19-1.png" alt="plot of chunk unnamed-chunk-19"></p>
+<p><img src="../content/images/2014/11/unnamed-chunk-19-1.png" alt="plot of chunk unnamed-chunk-19" /></p>
 
 <p>You can see that the seasonal variation has been removed from the seasonally adjusted time series. The seasonally adjusted time series now just contains the trend component and an irregular component.</p>
 
@@ -302,13 +480,13 @@ rainseries &lt;- ts(rain,start=c(1813))
 plot.ts(rainseries)  
 </code></pre>
 
-<p><img src="../content/images/2014/11/unnamed-chunk-20-1.png" alt="plot of chunk unnamed-chunk-20"></p>
+<p><img src="../content/images/2014/11/unnamed-chunk-20-1.png" alt="plot of chunk unnamed-chunk-20" /></p>
 
 <p>You can see from the plot that there is roughly <strong>constant level</strong> (the mean stays constant at about 25 inches). The random fluctuations in the time series seem to be roughly constant in size over time, so it is probably appropriate to describe the data using an <strong>additive model</strong>. Thus, we can make forecasts using simple exponential smoothing.</p>
 
 <p>To make forecasts using simple exponential smoothing in R, we can fit a simple exponential smoothing predictive model using the <code>“HoltWinters()”</code> function in R. To use <code>HoltWinters()</code> for simple exponential smoothing, we need to set the parameters <code>beta=FALSE</code> and <code>gamma=FALSE</code> in the <code>HoltWinters()</code> function (the beta and gamma parameters are used for Holt’s exponential smoothing, or Holt-Winters exponential smoothing, as described below).</p>
 
-<p>The HoltWinters() function returns a list variable, that contains several named elements. <br>
+<p>The HoltWinters() function returns a list variable, that contains several named elements. <br />
 For example, to use simple exponential smoothing to make forecasts for the time series of annual rainfall in London, we type</p>
 
 <pre><code class="language-r">rainseriesforecasts &lt;- HoltWinters(rainseries, beta=FALSE, gamma=FALSE)  
@@ -450,7 +628,7 @@ rainseriesforecasts
 <pre><code class="language-r">plot(rainseriesforecasts)  
 </code></pre>
 
-<p><img src="../content/images/2014/11/unnamed-chunk-23-1-1.png" alt="plot of chunk unnamed-chunk-23"></p>
+<p><img src="../content/images/2014/11/unnamed-chunk-23-1-1.png" alt="plot of chunk unnamed-chunk-23" /></p>
 
 <p>The plot shows the original time series in black, and the forecasts as a red line. The time series of forecasts is much <strong>smoother</strong> than the time series of the original data here.</p>
 
@@ -511,7 +689,7 @@ rainseriesforecasts2
 <pre><code class="language-r">plot.forecast(rainseriesforecasts2)  
 </code></pre>
 
-<p><img src="../content/images/2014/11/unnamed-chunk-28-1-2.png" alt="plot of chunk unnamed-chunk-28"></p>
+<p><img src="../content/images/2014/11/unnamed-chunk-28-1-2.png" alt="plot of chunk unnamed-chunk-28" /></p>
 
 <p>The ‘forecast errors’ are calculated as the observed values minus predicted values, for each time point. We can only calculate the forecast errors for the time period covered by our original time series, which is 1813-1912 for the rainfall data. As mentioned above, one measure of the accuracy of the predictive model is the sum-of-squared- errors (SSE) for the in-sample forecast errors.</p>
 
@@ -524,56 +702,144 @@ rainseriesforecasts2
 <pre><code class="language-r">acf(rainseriesforecasts2$residuals, lag.max=20)  
 </code></pre>
 
-<p><img src="../content/images/2014/11/unnamed-chunk-29-1-1.png" alt="plot of chunk unnamed-chunk-29"></p>
+<p><img src="../content/images/2014/11/unnamed-chunk-29-1-1.png" alt="plot of chunk unnamed-chunk-29" /></p>
 
 <pre><code class="language-r">rm(list = ls())  
 </code></pre>
-        </section>
+                  </div>
+                  <div class="at_author_details" id="author_details">
+                    <div class="at_author_name">
+                      <h3>About the Author</h3>
+                    </div>
+                    <div class="at_author">
+                        <div class="row">
+                            <div class="medium-2 columns show-for-medium-up">
+                                <div class="at_author_image">
+                                    <img src="index.html" alt="Vikas Gupta">
+                                </div>
+                            </div>
+                            <div class="medium-10 columns">
+                                <div class="at_author_name">
+                                  <span class="at_author_name_large"><a href="http://localhost:2368/author/vikas/">Vikas Gupta</a></span>
+                                </div>
+                                <div class="at_author_bio">
+                                    <p></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
 
-        <footer class="post-footer">
+                  <script>
+                    if (fauxGhostConfig.show_author_details)
+                      document.getElementById('author_details').style.display = 'block';
+                    else
+                      document.getElementById('author_details').style.display = 'none';
+                  </script>
+
+                  <div class="at_post_comments">
+                      <div id="at_disqus">
+                          <div id="disqus_thread">
+                                      <a class="button small radius" href="index.html#" onclick="atPost.loadDisqus('');return false;"><span class="fa fa-comments"></span> Discuss</a>
+                          </div>
+                      </div>
+                  </div>
+                </article>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="at_footer">
+	<div class="row">
+		<div class="large-12 columns text-center">
+			<div class="at_block">
+				<div class="copyright">
+					<span>&copy; 2014 <a href="../index.html">Data Analysis and Machine Learning</a>
+				</div>
+				<div class="poweredby" id="powered_by_ghost">
+					<span>Proudly published with <a class="icon-ghost" href="http://ghost.org">Ghost</a> using the
+						<a class="icon-ghost" href="https://www.moomoo.io/fauxghost">
+						<span><img src='../assets/images/FauxGhost_16x16.png?v=18cf216c79'/></span>
+						 <span>FauxGhost theme</span></a>
+				</div>
+					<div class="poweredby" id="email_me">
+					<span>Want to get in touch? <a class="icon-ghost" id="email_link" href="index.html"/></span>
+				</div>
+
+				<div class="at_icon_menu hide-for-small-only" id="bottom_social_menu_large">
+					<a class="at_icon_menu_item" href="../rss.1" id="bottom_rss_large"><span class="fa fa-rss"> <span>RSS</span></span></a>
+				</div>
+
+				<div class="at_icon_menu show-for-small-only" id="bottom_social_menu_small">
+					<a class="at_icon_menu_item" href="../rss.1" id="bottom_rss_small"><span class="fa fa-rss"></span></a>
+				</div>
+
+				<script>
+					if (fauxGhostConfig.show_published_by_ghost)
+						document.getElementById('powered_by_ghost').style.display = 'block';
+					else
+						document.getElementById('powered_by_ghost').style.display = 'none';
+
+					if (fauxGhostConfig.email)
+				  {
+						document.getElementById('email_me').style.display = 'block';
+						document.getElementById('email_link').href = "mailto:" + fauxGhostConfig.email.address;
+						document.getElementById('email_link').appendChild( document.createTextNode(fauxGhostConfig.email.name) );
+					}
+					else
+						document.getElementById('email_me').style.display = 'none';
+
+					var largeDiv = document.getElementById('bottom_social_menu_large');
+					var smallDiv = document.getElementById('bottom_social_menu_small');
+
+					if (fauxGhostConfig.socialLinks)
+					{
+						fauxGhostConfig.socialLinks.forEach(function(link)
+						{
+							var extraHtmlLarge = '<a class="at_icon_menu_item" href="http://localhost:2368/time-series-data-analysis/'&#32;+&#32;link.href&#32;+								'" ><span class="fa ' + link.icon + '"></span> <span>' + link.name + '</span></a>';
+
+							var extraHtmlSmall = '<a class="at_icon_menu_item" href="http://localhost:2368/time-series-data-analysis/'&#32;+&#32;link.href&#32;+								'" ><span class="fa ' + link.icon + '"></span></a>';
+
+							largeDiv.innerHTML = extraHtmlLarge + largeDiv.innerHTML;
+							smallDiv.innerHTML = extraHtmlSmall + smallDiv.innerHTML;
+						});
+					}
+
+					if (!fauxGhostConfig.rss)
+					{
+						var rssLargeDiv = document.getElementById('bottom_rss_large');
+						var rssSmallDiv = document.getElementById('bottom_rss_small');
+
+						largeDiv.removeChild(rssLargeDiv);
+						smallDiv.removeChild(rssSmallDiv);
+					}
+				</script>
+
+			</div>
+		</div>
+	</div>
+</div>
 
 
+            <a class='exit-off-canvas'></a>
 
-            <section class="author">
-                <h4><a href="http://localhost:2368/author/vikas/">Vikas Gupta</a></h4>
+          </div>
+        </div>
+      </div>
+    </div>
 
-                    <p>Read <a href="http://localhost:2368/author/vikas/">more posts</a> by this author.</p>
-                <div class="author-meta">
-                    
-                    
-                </div>
-            </section>
+    <script src="../assets/js/jquery.min.js?v=18cf216c79"></script>
+    <script src="../assets/js/foundation.min.js?v=18cf216c79"></script>
+    <script src="../assets/js/fauxghost.min.js?v=18cf216c79"></script>
+    <script>
+      $(document).foundation();
 
-
-            <section class="share">
-                <h4>Share this post</h4>
-                <a class="icon-twitter" href="https://twitter.com/share?text=Time%20Series%20Data%20analysis&amp;url=http://localhost:2368/time-series-data-analysis/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
-                    <span class="hidden">Twitter</span>
-                </a>
-                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:2368/time-series-data-analysis/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
-                    <span class="hidden">Facebook</span>
-                </a>
-                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://localhost:2368/time-series-data-analysis/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
-                    <span class="hidden">Google+</span>
-                </a>
-            </section>
-
-        </footer>
-
-    </article>
-
-</main>
-
-
-
-    <footer class="site-footer clearfix">
-         <section class="copyright"><a href="../">Data Science and Machine Learning</a> © 2014</section>
-         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
-    </footer>
-
-    <script src="../public/jquery.js?v=7c0c3ad0b3"></script>
-
-    <script type="text/javascript" src="../assets/js/jquery.fitvids.js?v=7c0c3ad0b3"></script>
-    <script type="text/javascript" src="../assets/js/index.js?v=7c0c3ad0b3"></script>
+      if (!fauxGhostConfig.sidebar)
+      {
+        document.getElementById('menu_inner_wrap').removeChild(document.getElementById('show_menu_link'));
+      }
+    </script>
 
 </body>
+</html>
