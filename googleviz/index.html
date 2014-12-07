@@ -1,0 +1,249 @@
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Vizualization using GoogleViz in R</title>
+    <meta name="description" content="">
+
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="../favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="../assets/css/screen.css?v=7c0c3ad0b3">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic%7COpen+Sans:700,400">
+
+    <link rel="canonical" href="index.html">
+    
+    <meta property="og:site_name" content="Data Science and Machine Learning">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Vizualization using GoogleViz in R">
+    <meta property="og:description" content='Install and load the package   #install.packages("googleVis", dependencies=TRUE) library(googleVis)   Take Population data   #mapping  head(Population[,-5]) ##Example data   ##   Rank       Country Population % of World Population Mode       Date ## 1    1         China 1339940000                0.1950 TRUE 2010-10-09 ## 2    2         India...'>
+    <meta property="og:url" content="http://localhost:2368/googleviz/">
+    <meta property="article:published_time" content="2014-11-24T02:36:19.239Z">
+    <meta property="article:modified_time" content="2014-11-25T02:13:56.833Z">
+    
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Vizualization using GoogleViz in R">
+    <meta name="twitter:description" content='Install and load the package   #install.packages("googleVis", dependencies=TRUE) library(googleVis)   Take Population data   #mapping  head(Population[,-5]) ##Example data   ##   Rank       Country Population % of World Population Mode       Date ## 1    1         China 1339940000                0.1950 TRUE 2010-10-09 ## 2    2         India...'>
+    <meta name="twitter:url" content="http://localhost:2368/googleviz/">
+    
+    <script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "publisher": "Data Science and Machine Learning",
+    "author": {
+        "@type": "Person",
+        "name": "Vikas Gupta",
+        "url": "http://localhost:2368/author/vikas",
+        "sameAs": null
+    },
+    "headline": "Vizualization using GoogleViz in R",
+    "url": "http://localhost:2368/googleviz/",
+    "datePublished": "2014-11-24T02:36:19.239Z",
+    "dateModified": "2014-11-25T02:13:56.833Z",
+    "description": "Install and load the package   #install.packages(&quot;googleVis&quot;, dependencies=TRUE) library(googleVis)   Take Population data   #mapping  head(Population[,-5]) ##Example data   ##   Rank       Country Population % of World Population Mode       Date ## 1    1         China 1339940000                0.1950 TRUE 2010-10-09 ## 2    2         India..."
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.5">
+    <link rel="alternate" type="application/rss+xml" title="Data Science and Machine Learning" href="../rss/index.html">
+</head>
+<body class="post-template">
+
+    
+
+
+<header class="main-header post-head no-cover">
+    <nav class="main-nav  clearfix">
+        <a class="back-button icon-arrow-left" href="../">Home</a>
+        <a class="subscribe-button icon-feed" href="../rss/index.rss">Subscribe</a>
+    </nav>
+</header>
+
+<main class="content" role="main">
+
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Vizualization using GoogleViz in R</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2014-11-23">23 November 2014</time> 
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>Install and load the package  </p>
+
+<pre><code class="language-r">#install.packages("googleVis", dependencies=TRUE)
+library(googleVis)  
+</code></pre>
+
+<p>Take Population data  </p>
+
+<pre><code class="language-r">#mapping 
+head(Population[,-5]) ##Example data  
+</code></pre>
+
+<pre><code>##   Rank       Country Population % of World Population Mode       Date
+## 1    1         China 1339940000                0.1950 TRUE 2010-10-09
+## 2    2         India 1188650000                0.1730 TRUE 2010-10-09
+## 3    3 United States  310438000                0.0452 TRUE 2010-10-09
+## 4    4     Indonesia  237556363                0.0346 TRUE 2010-10-09
+## 5    5        Brazil  193626000                0.0282 TRUE 2010-10-09
+## 6    6      Pakistan  170745000                0.0248 TRUE 2010-10-09
+</code></pre>
+
+<p>Size of data  </p>
+
+<pre><code class="language-r">dim(Population)  
+</code></pre>
+
+<pre><code>## [1] 195   7
+</code></pre>
+
+<p>Generate Geo Map from Gviz  </p>
+
+<pre><code class="language-r">Geo=gvisGeoMap(Population, locationvar="Country",  
+               numvar="Population", options=list(height=350, dataMode='regions'))
+</code></pre>
+
+<p>Plot the map.  </p>
+
+<pre><code class="language-r">plot(Geo)  
+</code></pre>
+
+<iframe src="https://38dce00e545674752c0d41d06778d8ab3b786087.googledrive.com/host/0B0J1O2jMMERWRS1CNi1pclEtNWM/plot1.html" width="556px" height="350px" scrolling="no" marginwidth="0" marginheight="0" frameborder="0">  
+</iframe>
+
+<h2 id="example2">Example # 2  </h2>
+
+<p>Get age data</p>
+
+<pre><code class="language-r">input=read.csv("http://www.rci.rutgers.edu/~rwomack/Rexamples/UNdata.csv",header=TRUE)  
+Map&lt;- data.frame(input$Country.or.Area, input$Value)  
+names(Map)&lt;- c("Country", "Age")  
+head(Map)  
+</code></pre>
+
+<pre><code>##       Country    Age
+## 1 Afghanistan 58.677
+## 2 Afghanistan 58.677
+## 3 Afghanistan 58.677
+## 4 Afghanistan 58.677
+## 5 Afghanistan 56.715
+## 6 Afghanistan 56.715
+</code></pre>
+
+<p>Size of data (10k Rows)  </p>
+
+<pre><code class="language-r">dim(Map)  
+</code></pre>
+
+<pre><code>## [1] 10076     2
+</code></pre>
+
+<p>Generate Geo Map from Gviz  </p>
+
+<pre><code class="language-r">Geo=gvisGeoMap(Map, locationvar="Country", numvar="Age",  
+               options=list(height=350, dataMode='regions'))
+</code></pre>
+
+<p>Plot the map  </p>
+
+<pre><code class="language-r">plot(Geo)  
+</code></pre>
+
+<iframe src="https://38dce00e545674752c0d41d06778d8ab3b786087.googledrive.com/host/0B0J1O2jMMERWRS1CNi1pclEtNWM/plot2.html" width="556px" height="350px" scrolling="no" marginwidth="0" marginheight="0" frameborder="0">  
+</iframe>
+
+<h2 id="motioncharts">Motion charts  </h2>
+
+<p>Get Fruits data  </p>
+
+<pre><code class="language-r">Fruits ## Example data  
+</code></pre>
+
+<pre><code>##     Fruit Year Location Sales Expenses Profit       Date
+## 1  Apples 2008     West    98       78     20 2008-12-31
+## 2  Apples 2009     West   111       79     32 2009-12-31
+## 3  Apples 2010     West    89       76     13 2010-12-31
+## 4 Oranges 2008     East    96       81     15 2008-12-31
+## 5 Bananas 2008     East    85       76      9 2008-12-31
+## 6 Oranges 2009     East    93       80     13 2009-12-31
+## 7 Bananas 2009     East    94       78     16 2009-12-31
+## 8 Oranges 2010     East    98       91      7 2010-12-31
+## 9 Bananas 2010     East    81       71     10 2010-12-31
+</code></pre>
+
+<p>Small dataset  </p>
+
+<pre><code class="language-r">dim(Fruits)  
+</code></pre>
+
+<pre><code>## [1] 9 7
+</code></pre>
+
+<p>Generate Motion chart with Gviz  </p>
+
+<pre><code class="language-r">M &lt;- gvisMotionChart(Fruits, idvar="Fruit", timevar="Year")  
+</code></pre>
+
+<p>Plot the motion map  </p>
+
+<pre><code class="language-r">plot(M)  
+</code></pre>
+
+<iframe src="https://38dce00e545674752c0d41d06778d8ab3b786087.googledrive.com/host/0B0J1O2jMMERWRS1CNi1pclEtNWM/plot3.html" width="600px" height="500px" scrolling="no" marginwidth="0" marginheight="0" frameborder="0">  
+</iframe>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+                <h4><a href="http://localhost:2368/author/vikas/">Vikas Gupta</a></h4>
+
+                    <p>Read <a href="http://localhost:2368/author/vikas/">more posts</a> by this author.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="icon-twitter" href="https://twitter.com/share?text=Vizualization%20using%20GoogleViz%20in%20R&amp;url=http://localhost:2368/googleviz/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:2368/googleviz/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://localhost:2368/googleviz/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+    </article>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="../">Data Science and Machine Learning</a> © 2014</section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <script src="../public/jquery.js?v=7c0c3ad0b3"></script>
+
+    <script type="text/javascript" src="../assets/js/jquery.fitvids.js?v=7c0c3ad0b3"></script>
+    <script type="text/javascript" src="../assets/js/index.js?v=7c0c3ad0b3"></script>
+
+</body>

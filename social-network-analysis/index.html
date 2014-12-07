@@ -1,0 +1,881 @@
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Social Network analysis</title>
+    <meta name="description" content="">
+
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="../favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="../assets/css/screen.css?v=7c0c3ad0b3">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic%7COpen+Sans:700,400">
+
+    <link rel="canonical" href="index.html">
+    
+    <meta property="og:site_name" content="Data Science and Machine Learning">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Social Network analysis">
+    <meta property="og:description" content='Social Network Analysis Social Network Analysis Load the required packages.  ##----------------------------- Social Network Analysis ------------------------------ if (!require(network)) {install.packages("network"); require(network)}  ## basic SNA stuff, relational data   if (!require(igraph)) {install.packages("igraph"); require(igraph)}  ## fancy SNA stuff, main...'>
+    <meta property="og:url" content="http://localhost:2368/social-network-analysis/">
+    <meta property="article:published_time" content="2014-11-20T01:16:52.707Z">
+    <meta property="article:modified_time" content="2014-11-20T05:27:23.587Z">
+    
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Social Network analysis">
+    <meta name="twitter:description" content='Social Network Analysis Social Network Analysis Load the required packages.  ##----------------------------- Social Network Analysis ------------------------------ if (!require(network)) {install.packages("network"); require(network)}  ## basic SNA stuff, relational data   if (!require(igraph)) {install.packages("igraph"); require(igraph)}  ## fancy SNA stuff, main...'>
+    <meta name="twitter:url" content="http://localhost:2368/social-network-analysis/">
+    
+    <script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "publisher": "Data Science and Machine Learning",
+    "author": {
+        "@type": "Person",
+        "name": "Vikas Gupta",
+        "url": "http://localhost:2368/author/vikas",
+        "sameAs": null
+    },
+    "headline": "Social Network analysis",
+    "url": "http://localhost:2368/social-network-analysis/",
+    "datePublished": "2014-11-20T01:16:52.707Z",
+    "dateModified": "2014-11-20T05:27:23.587Z",
+    "description": "Social Network Analysis Social Network Analysis Load the required packages.  ##----------------------------- Social Network Analysis ------------------------------ if (!require(network)) {install.packages(&quot;network&quot;); require(network)}  ## basic SNA stuff, relational data   if (!require(igraph)) {install.packages(&quot;igraph&quot;); require(igraph)}  ## fancy SNA stuff, main..."
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.5">
+    <link rel="alternate" type="application/rss+xml" title="Data Science and Machine Learning" href="../rss/index.html">
+</head>
+<body class="post-template">
+
+    
+
+
+<header class="main-header post-head no-cover">
+    <nav class="main-nav  clearfix">
+        <a class="back-button icon-arrow-left" href="../">Home</a>
+        <a class="subscribe-button icon-feed" href="../rss/index.rss">Subscribe</a>
+    </nav>
+</header>
+
+<main class="content" role="main">
+
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Social Network analysis</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2014-11-19">19 November 2014</time> 
+            </section>
+        </header>
+
+        <section class="post-content">
+            <h1 id="socialnetworkanalysis">Social Network Analysis</h1>
+
+<p>Social Network Analysis</p>
+
+<p>Load the required packages. </p>
+
+<pre><code class="language-r">##----------------------------- Social Network Analysis ------------------------------
+if (!require(network)) {install.packages("network"); require(network)}  ## basic SNA stuff, relational data  
+if (!require(igraph)) {install.packages("igraph"); require(igraph)}  ## fancy SNA stuff, main package  
+if (!require(tm)) {install.packages("tm"); require(tm)}  ## text mining package  
+</code></pre>
+
+<h6 id="loadthedata">Load the data</h6>
+
+<pre><code class="language-r">##------------------------------ SNA Data Structure -------------------------------
+dat3490 &lt;- read.csv("http://people.fas.harvard.edu/~mair/psych3490/3490list.csv")  
+</code></pre>
+
+<p>First Name: In some cases this contains full name. </p>
+
+<pre><code class="language-r">fmName &lt;- as.character(dat3490[,2])  
+fmName                        ## first and middle names  
+</code></pre>
+
+<pre><code>##  [1] "Nicolas"           "Arthur"            "Donal Patrick"    
+##  [4] "Aleksandr Garrett" "Chen"              "Erin"             
+##  [7] "John David Nadal"  "Anna"              "David"            
+## [10] "Yunfei"            "Aaron Edward"      "Andrew Garrett"   
+## [13] "Jonathan"
+</code></pre>
+
+<p>Extract the first name only</p>
+
+<pre><code class="language-r">fmsplit &lt;- strsplit(fmName, split = " ")     ## separate first and middle name in structure  
+fmsplit  
+</code></pre>
+
+<pre><code>## [[1]]
+## [1] "Nicolas"
+## 
+## [[2]]
+## [1] "Arthur"
+## 
+## [[3]]
+## [1] "Donal"   "Patrick"
+## 
+## [[4]]
+## [1] "Aleksandr" "Garrett"  
+## 
+## [[5]]
+## [1] "Chen"
+## 
+## [[6]]
+## [1] "Erin"
+## 
+## [[7]]
+## [1] "John"  "David" "Nadal"
+## 
+## [[8]]
+## [1] "Anna"
+## 
+## [[9]]
+## [1] "David"
+## 
+## [[10]]
+## [1] "Yunfei"
+## 
+## [[11]]
+## [1] "Aaron"  "Edward"
+## 
+## [[12]]
+## [1] "Andrew"  "Garrett"
+## 
+## [[13]]
+## [1] "Jonathan"
+</code></pre>
+
+<h5 id="herewego">Here we go</h5>
+
+<pre><code class="language-r">fName &lt;- sapply(fmsplit, function(xx) xx[1]) ## extract first name only and store in vector  
+fName  
+</code></pre>
+
+<pre><code>##  [1] "Nicolas"   "Arthur"    "Donal"     "Aleksandr" "Chen"     
+##  [6] "Erin"      "John"      "Anna"      "David"     "Yunfei"   
+## [11] "Aaron"     "Andrew"    "Jonathan"
+</code></pre>
+
+<pre><code class="language-r">N &lt;- length(fName)      ## number of participants  
+</code></pre>
+
+<h2 id="unidirectednetowrk">Unidirected Netowrk</h2>
+
+<h5 id="helperfunctions">Helper Functions</h5>
+
+<p>Diagonal Matrix  </p>
+
+<pre><code class="language-r">diag(5)  
+</code></pre>
+
+<pre><code>##      [,1] [,2] [,3] [,4] [,5]
+## [1,]    1    0    0    0    0
+## [2,]    0    1    0    0    0
+## [3,]    0    0    1    0    0
+## [4,]    0    0    0    1    0
+## [5,]    0    0    0    0    1
+</code></pre>
+
+<p>Access the upper Triangle of a Matrix  </p>
+
+<pre><code class="language-r">upper.tri(diag(5))  
+</code></pre>
+
+<pre><code>##       [,1]  [,2]  [,3]  [,4]  [,5]
+## [1,] FALSE  TRUE  TRUE  TRUE  TRUE
+## [2,] FALSE FALSE  TRUE  TRUE  TRUE
+## [3,] FALSE FALSE FALSE  TRUE  TRUE
+## [4,] FALSE FALSE FALSE FALSE  TRUE
+## [5,] FALSE FALSE FALSE FALSE FALSE
+</code></pre>
+
+<p>Access lower triangle by tranposing upper triangle  </p>
+
+<pre><code class="language-r">t(upper.tri(diag(5)))  
+</code></pre>
+
+<pre><code>##       [,1]  [,2]  [,3]  [,4]  [,5]
+## [1,] FALSE FALSE FALSE FALSE FALSE
+## [2,]  TRUE FALSE FALSE FALSE FALSE
+## [3,]  TRUE  TRUE FALSE FALSE FALSE
+## [4,]  TRUE  TRUE  TRUE FALSE FALSE
+## [5,]  TRUE  TRUE  TRUE  TRUE FALSE
+</code></pre>
+
+<h4 id="binaryneworkwithnoweightsundirectednetwork">Binary Nework with no weights, undirected network</h4>
+
+<pre><code class="language-r">## --- binary (no weights), undirected network
+set.seed(123)  
+vec01 &lt;- sample(0:1, N*(N-1)/2, replace = TRUE)  
+X &lt;- diag(N)  
+X[upper.tri(X)] &lt;- vec01  
+X &lt;- X + t(X)  
+diag(X) &lt;- 0  
+rownames(X) &lt;- colnames(X) &lt;- fName  
+X                   ## binary, symmetric adjacency matrix  
+</code></pre>
+
+<pre><code>##           Nicolas Arthur Donal Aleksandr Chen Erin John Anna David Yunfei Aaron Andrew Jonathan
+## Nicolas         0      0     1         1    1    1    1    1     0      1     0      0        1
+## Arthur          0      0     0         1    1    0    0    1     0      0     0      0        1
+## Donal           1      0     0         0    1    1    0    1     1      0     0      1        1
+## Aleksandr       1      1     0         0    0    1    0    1     1      0     0      1        0
+## Chen            1      1     1         0    0    0    1    1     1      0     1      0        1
+## Erin            1      0     1         1    0    0    1    1     1      0     0      1        1
+## John            1      0     0         0    1    1    0    1     0      0     0      0        1
+## Anna            1      1     1         1    1    1    1    0     0      0     1      0        0
+## David           0      0     1         1    1    1    0    0     0      0     0      0        0
+## Yunfei          1      0     0         0    0    0    0    0     0      0     1      1        0
+## Aaron           0      0     0         0    1    0    0    1     0      1     0      0        0
+## Andrew          0      0     1         1    0    1    0    0     0      1     0      0        1
+## Jonathan        1      1     1         0    1    1    1    0     0      0     0      1        0
+</code></pre>
+
+<p>Check for summetry of the resulting matrix  </p>
+
+<pre><code class="language-r">isSymmetric(X)  
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
+
+<p><code>graph.adjacency</code>: function to create <code>igraph</code> from adjacency matrix.</p>
+
+<pre><code class="language-r">net1 &lt;- graph.adjacency(X, mode = "undirected")      ## getting the data in shape in order to use it in igraph  
+</code></pre>
+
+<p>Plot the network</p>
+
+<pre><code class="language-r">plot(net1)  
+</code></pre>
+
+<p><img src="../content/images/2014/11/unnamed-chunk-12-1.png" alt=""></p>
+
+<p>Get the edges</p>
+
+<pre><code class="language-r">el1 &lt;- get.edgelist(net1, names = TRUE)    ## this would be the corresponding edge list  
+el1[1:10]  
+</code></pre>
+
+<pre><code>##  [1] "Nicolas" "Nicolas" "Nicolas" "Nicolas" "Nicolas" "Nicolas" "Nicolas"
+##  [8] "Nicolas" "Arthur"  "Arthur"
+</code></pre>
+
+<h2 id="weighteddirectednetwork">Weighted, directed network</h2>
+
+<pre><code class="language-r">##--- weighted, directed network
+set.seed(123)  
+veck &lt;- rpois(N*N, lambda = 0.5)   ## create weights (drawing from a Poisson distribution)  
+veck  
+</code></pre>
+
+<pre><code>##   [1] 0 1 0 1 2 0 0 1 0 0 2 0 1 0 0 1 0 0 0 2 1 1 1 3 1 1 0 0 0 0 2 1 1 1 0
+##  [36] 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 1 0 0 0 0 1 1 0 1 0 0 0 1 0 1 1 1 0
+##  [71] 1 1 1 0 0 0 0 1 0 0 0 1 0 1 0 0 2 1 1 0 0 1 0 1 0 0 1 0 0 0 0 0 0 2 0
+## [106] 1 2 1 0 0 2 0 0 2 1 0 0 2 0 0 1 0 0 0 0 2 0 0 0 1 1 1 1 1 0 1 1 1 2 0
+## [141] 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 0 0
+</code></pre>
+
+<pre><code class="language-r">hist(veck)  
+</code></pre>
+
+<p><img src="../content/images/2014/11/unnamed-chunk-15-1.png" alt=""></p>
+
+<p>Create some outliers</p>
+
+<pre><code class="language-r">veck[c(4, 20)] &lt;- 8                ## let's create some outliers  
+hist(veck)  
+</code></pre>
+
+<p><img src="../content/images/2014/11/unnamed-chunk-16-1.png" alt=""></p>
+
+<p>Populate the matrix  </p>
+
+<pre><code class="language-r">X &lt;- matrix(veck, ncol = N)  
+diag(X) &lt;- 0  
+rownames(X) &lt;- colnames(X) &lt;- fName  
+X        ## adjacency matrix (not symmetric, weights)  
+</code></pre>
+
+<pre><code>##           Nicolas Arthur Donal Aleksandr Chen Erin John Anna David Yunfei Aaron Andrew Jonathan
+## Nicolas         0      0     0         0    1    0    0    1     0      2     1      0        0
+## Arthur          1      0     0         0    0    1    0    0     1      0     1      1        0
+## Donal           0      1     0         0    0    1    0    1     2      0     1      0        0
+## Aleksandr       8      0     0         0    0    1    1    0     1      1     1      0        0
+## Chen            2      0     2         0    0    0    0    0     0      0     0      0        0
+## Erin            0      0     1         0    1    0    1    1     0      0     1      0        0
+## John            0      8     1         0    1    1    0    0     2      0     1      1        1
+## Anna            1      1     1         0    0    1    0    0     0      0     1      1        0
+## David           0      1     0         0    1    0    2    0     0      2     2      0        0
+## Yunfei          0      1     0         0    0    0    1    0     2      0     0      0        0
+## Aaron           2      3     1         1    0    0    1    0     1      0     0      0        1
+## Andrew          0      1     0         0    0    0    0    0     0      0     0      0        0
+## Jonathan        1      1     0         0    1    1    0    2     0      1     0      0        0
+</code></pre>
+
+<p>Resulting Matrix is not symmetric  </p>
+
+<pre><code class="language-r">isSymmetric(X)  
+</code></pre>
+
+<pre><code>## [1] FALSE
+</code></pre>
+
+<p>Getting the data in shape.  </p>
+
+<pre><code class="language-r">net2 &lt;- graph.adjacency(X, weighted = TRUE)      ## getting the data in shape in order to use it in igraph  
+</code></pre>
+
+<p>Get the edges of this network  </p>
+
+<pre><code class="language-r">E(net2)  
+</code></pre>
+
+<pre><code>## Edge sequence:
+##                            
+## [1]  Nicolas   -&gt; Chen     
+## [2]  Nicolas   -&gt; Anna     
+## [3]  Nicolas   -&gt; Yunfei   
+## [4]  Nicolas   -&gt; Aaron    
+## [5]  Arthur    -&gt; Nicolas  
+## [6]  Arthur    -&gt; Erin     
+## [7]  Arthur    -&gt; David     
+...
+## [57] Andrew    -&gt; Arthur   
+## [58] Jonathan  -&gt; Nicolas  
+## [59] Jonathan  -&gt; Arthur   
+## [60] Jonathan  -&gt; Chen     
+## [61] Jonathan  -&gt; Erin     
+## [62] Jonathan  -&gt; Anna     
+## [63] Jonathan  -&gt; Yunfei
+</code></pre>
+
+<p>What is the weight of each edge</p>
+
+<pre><code class="language-r">E(net2)$weight                  ## edge weights  
+</code></pre>
+
+<pre><code>##  [1] 1 1 2 1 1 1 1 1 1 1 1 1 2 1 8 1 1 1 1 1 2 2 1 1 1 1 1 8 1 1 1 2 1 1 1
+## [36] 1 1 1 1 1 1 1 1 2 2 2 1 1 2 2 3 1 1 1 1 1 1 1 1 1 1 2 1
+</code></pre>
+
+<p>Vertices</p>
+
+<pre><code class="language-r">V(net2)  
+</code></pre>
+
+<pre><code>## Vertex sequence:
+##  [1] "Nicolas"   "Arthur"    "Donal"     "Aleksandr" "Chen"     
+##  [6] "Erin"      "John"      "Anna"      "David"     "Yunfei"   
+## [11] "Aaron"     "Andrew"    "Jonathan"
+</code></pre>
+
+<pre><code class="language-r">plot(net2,  edge.arrow.size = 0.5, edge.width = E(net2)$weight,  
+     layout = layout.fruchterman.reingold)
+</code></pre>
+
+<p><img src="../content/images/2014/11/unnamed-chunk-23-1.png" alt=""></p>
+
+<p><code>plot.igraph</code> provides numerous options for customizing the plot; see help</p>
+
+<pre><code class="language-r">?igraph.plotting
+</code></pre>
+
+<h4 id="interactiveplots">interactive plots</h4>
+
+<pre><code class="language-r">tkplot(net2,  edge.arrow.size = 0.5, edge.width = E(net2)$weight)  
+</code></pre>
+
+<pre><code class="language-r">##------------------------------ Centrality and Prestige ------------------------
+## ------- undirected networks ------
+## Florentine families: During the renaissance (14th-17th century) Florence
+## was the banking center of Europe (mostly due to the Medicis). During this period
+## of time many aristocratic families lived in Florence. Aristocratic family
+## members tend to marry members from other aristocratic families. 
+## In this example we explore the Florentine marriage network and compute 
+## various network measures
+
+data(flo)  
+flo                ## adjacency matrix, undirected --&gt; symmetric  
+</code></pre>
+
+<pre><code>##              Acciaiuoli Albizzi Barbadori Bischeri Castellani Ginori  Guadagni Lamberteschi Medici Pazzi Peruzzi Pucci Ridolfi Salviati Strozzi Tornabuoni
+## Acciaiuoli            0       0         0        0          0      0         0            0      1     0       0     0       0        0       0          0
+## Albizzi               0       0         0        0          0      1         1            0      1     0       0     0       0        0       0          0
+## Barbadori             0       0         0        0          1      0         0            0      1     0       0     0       0        0       0          0
+## Bischeri              0       0         0        0          0      0         1            0      0     0       1     0       0        0       1          0
+## Castellani            0       0         1        0          0      0         0            0      0     0       1     0       0        0       1          0
+## Ginori                0       1         0        0          0      0         0            0      0     0       0     0       0        0       0          0
+## Guadagni              0       1         0        1          0      0         0            1      0     0       0     0       0        0       0          1
+## Lamberteschi          0       0         0        0          0      0         1            0      0     0       0     0       0        0       0          0
+## Medici                1       1         1        0          0      0         0            0      0     0       0     0       1        1       0          1
+## Pazzi                 0       0         0        0          0      0         0            0      0     0       0     0       0        1       0          0
+## Peruzzi               0       0         0        1          1      0         0            0      0     0       0     0       0        0       1          0
+## Pucci                 0       0         0        0          0      0         0            0      0     0       0     0       0        0       0          0
+## Ridolfi               0       0         0        0          0      0         0            0      1     0       0     0       0        0       1          1
+## Salviati              0       0         0        0          0      0         0            0      1     1       0     0       0        0       0          0
+## Strozzi               0       0         0        1          1      0         0            0      0     0       1     0       1        0       0          0
+## Tornabuoni            0       0         0        0          0      0         1            0      1     0       0     0       1        0       0          0
+</code></pre>
+
+<pre><code class="language-r">isSymmetric(flo)  
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
+
+<pre><code class="language-r">floG &lt;- graph.adjacency(flo, mode = "undirected")   ## let's just convert the adjacency matrix into an igraph object
+
+plot(floG, vertex.size = 0, edge.arrow.size = 0.25,  
+     vertex.label.dist = 0.5)     
+</code></pre>
+
+<p><img src="../content/images/2014/11/unnamed-chunk-28-1.png" alt=""></p>
+
+<p>let's remove the poor Pucci's</p>
+
+<pre><code class="language-r">floG1 &lt;- delete.vertices(floG, v = "Pucci")  
+plot(floG1, vertex.size = 0, edge.arrow.size = 0.25,  
+     vertex.label.dist = 0.5)  
+</code></pre>
+
+<p><img src="../content/images/2014/11/unnamed-chunk-29-1.png" alt=""></p>
+
+<p>edges</p>
+
+<pre><code class="language-r">E(floG1)               ## edges  
+</code></pre>
+
+<pre><code>## Edge sequence:
+##                                  
+## [1]  Medici       -- Acciaiuoli  
+## [2]  Ginori       -- Albizzi     
+## [3]  Guadagni     -- Albizzi     
+## [4]  Medici       -- Albizzi     
+## [5]  Castellani   -- Barbadori   
+## [6]  Medici       -- Barbadori   
+## [7]  Guadagni     -- Bischeri    
+## [8]  Peruzzi      -- Bischeri    
+## [9]  Strozzi      -- Bischeri    
+## [10] Peruzzi      -- Castellani  
+## [11] Strozzi      -- Castellani  
+## [12] Lamberteschi -- Guadagni    
+## [13] Tornabuoni   -- Guadagni    
+## [14] Ridolfi      -- Medici      
+## [15] Salviati     -- Medici      
+## [16] Tornabuoni   -- Medici      
+## [17] Salviati     -- Pazzi       
+## [18] Strozzi      -- Peruzzi     
+## [19] Strozzi      -- Ridolfi     
+## [20] Tornabuoni   -- Ridolfi
+</code></pre>
+
+<p>vertices</p>
+
+<pre><code class="language-r">V(floG1)               ## vertices  
+</code></pre>
+
+<pre><code>## Vertex sequence:
+##  [1] "Acciaiuoli"   "Albizzi"      "Barbadori"    "Bischeri"    
+##  [5] "Castellani"   "Ginori"       "Guadagni"     "Lamberteschi"
+##  [9] "Medici"       "Pazzi"        "Peruzzi"      "Ridolfi"     
+## [13] "Salviati"     "Strozzi"      "Tornabuoni"
+</code></pre>
+
+<p>number of nodes</p>
+
+<pre><code class="language-r">N &lt;- length(V(floG1))  ## number of nodes  
+</code></pre>
+
+<pre><code class="language-r">## -- Nodal degree:
+degvec &lt;- sort(degree(floG1), decreasing = TRUE)  
+degvec  
+</code></pre>
+
+<pre><code>##       Medici     Guadagni      Strozzi      Albizzi     Bischeri 
+##            6            4            4            3            3 
+##   Castellani      Peruzzi      Ridolfi   Tornabuoni    Barbadori 
+##            3            3            3            3            2 
+##     Salviati   Acciaiuoli       Ginori Lamberteschi        Pazzi 
+##            2            1            1            1            1
+</code></pre>
+
+<pre><code class="language-r">mean(degvec)     ## useful if we want to compare different marriage networks  
+</code></pre>
+
+<pre><code>## [1] 2.666667
+</code></pre>
+
+<h5 id="density">Density:</h5>
+
+<p>Density of the graph is number of edges to number of possible edges</p>
+
+<pre><code class="language-r">graph.density(floG1)  ## ~19% of all possible edges are present  
+</code></pre>
+
+<pre><code>## [1] 0.1904762
+</code></pre>
+
+<h5 id="centralitymeasures">Centrality measures:</h5>
+
+<h6 id="degreecentrality">Degree centrality</h6>
+
+<pre><code class="language-r">degCvec &lt;- sort(degree(floG1), decreasing = TRUE)  ## degree centrality  
+degCvec  
+</code></pre>
+
+<pre><code>##       Medici     Guadagni      Strozzi      Albizzi     Bischeri 
+##            6            4            4            3            3 
+##   Castellani      Peruzzi      Ridolfi   Tornabuoni    Barbadori 
+##            3            3            3            3            2 
+##     Salviati   Acciaiuoli       Ginori Lamberteschi        Pazzi 
+##            2            1            1            1            1
+</code></pre>
+
+<pre><code class="language-r">## since the degree depends on the number of actors we can standardize 
+## it by the number of nodes - 1 (e.g. for comparing across networks)
+
+degCvec/(N-1)  
+</code></pre>
+
+<pre><code>##       Medici     Guadagni      Strozzi      Albizzi     Bischeri 
+##   0.42857143   0.28571429   0.28571429   0.21428571   0.21428571 
+##   Castellani      Peruzzi      Ridolfi   Tornabuoni    Barbadori 
+##   0.21428571   0.21428571   0.21428571   0.21428571   0.14285714 
+##     Salviati   Acciaiuoli       Ginori Lamberteschi        Pazzi 
+##   0.14285714   0.07142857   0.07142857   0.07142857   0.07142857
+</code></pre>
+
+<pre><code class="language-r">centralization.degree(floG1)  ## group degree centralization  
+</code></pre>
+
+<pre><code>## $res
+##  [1] 1 3 2 3 3 1 4 1 6 1 3 3 2 4 3
+## 
+## $centralization
+## [1] 0.2380952
+## 
+## $theoretical_max
+## [1] 210
+</code></pre>
+
+<h5 id="closenesscentrality">Closeness centrality</h5>
+
+<pre><code class="language-r">sort(closeness(floG1), decreasing = TRUE)   ## closeness centrality  
+</code></pre>
+
+<pre><code>##       Medici      Ridolfi      Albizzi   Tornabuoni     Guadagni 
+##   0.04000000   0.03571429   0.03448276   0.03448276   0.03333333 
+##    Barbadori      Strozzi     Bischeri   Castellani     Salviati 
+##   0.03125000   0.03125000   0.02857143   0.02777778   0.02777778 
+##   Acciaiuoli      Peruzzi       Ginori Lamberteschi        Pazzi 
+##   0.02631579   0.02631579   0.02380952   0.02325581   0.02040816
+</code></pre>
+
+<pre><code class="language-r">shortest.paths(floG1)     ## matrix with geodesics  
+</code></pre>
+
+<pre><code>##              Acciaiuoli Albizzi Barbadori Bischeri Castellani Ginori
+## Acciaiuoli            0       2         2        4          3      3
+## Albizzi               2       0         2        2          3      1
+## Barbadori             2       2         0        3          1      3
+## Bischeri              4       2         3        0          2      3
+## Castellani            3       3         1        2          0      4
+## Ginori                3       1         3        3          4      0
+## Guadagni              3       1         3        1          3      2
+## Lamberteschi          4       2         4        2          4      3
+## Medici                1       1         1        3          2      2
+## Pazzi                 3       3         3        5          4      4
+## Peruzzi               4       3         2        1          1      4
+## Ridolfi               2       2         2        2          2      3
+## Salviati              2       2         2        4          3      3
+## Strozzi               3       3         2        1          1      4
+## Tornabuoni            2       2         2        2          3      3
+##              Guadagni Lamberteschi Medici Pazzi Peruzzi Ridolfi Salviati
+## Acciaiuoli          3            4      1     3       4       2        2
+## Albizzi             1            2      1     3       3       2        2
+## Barbadori           3            4      1     3       2       2        2
+## Bischeri            1            2      3     5       1       2        4
+## Castellani          3            4      2     4       1       2        3
+## Ginori              2            3      2     4       4       3        3
+## Guadagni            0            1      2     4       2       2        3
+## Lamberteschi        1            0      3     5       3       3        4
+## Medici              2            3      0     2       3       1        1
+## Pazzi               4            5      2     0       5       3        1
+## Peruzzi             2            3      3     5       0       2        4
+## Ridolfi             2            3      1     3       2       0        2
+## Salviati            3            4      1     1       4       2        0
+## Strozzi             2            3      2     4       1       1        3
+## Tornabuoni          1            2      1     3       3       1        2
+##              Strozzi Tornabuoni
+## Acciaiuoli         3          2
+## Albizzi            3          2
+## Barbadori          2          2
+## Bischeri           1          2
+## Castellani         1          3
+## Ginori             4          3
+## Guadagni           2          1
+## Lamberteschi       3          2
+## Medici             2          1
+## Pazzi              4          3
+## Peruzzi            1          3
+## Ridolfi            1          1
+## Salviati           3          2
+## Strozzi            0          2
+## Tornabuoni         2          0
+</code></pre>
+
+<pre><code class="language-r">centralization.closeness(floG1)  
+</code></pre>
+
+<pre><code>## $res
+##  [1] 0.3684211 0.4827586 0.4375000 0.4000000 0.3888889 0.3333333 0.4666667
+##  [8] 0.3255814 0.5600000 0.2857143 0.3684211 0.5000000 0.3888889 0.4375000
+## [15] 0.4827586
+## 
+## $centralization
+## [1] 0.3224523
+## 
+## $theoretical_max
+## [1] 6.740741
+</code></pre>
+
+<pre><code class="language-r">## Betweenness centrality
+sort(betweenness(floG1, directed = FALSE, normalized = TRUE), decreasing = TRUE)  ## node betweenness  
+centralization.betweenness(floG1, directed = FALSE)  ## aggregate measure
+
+ebet &lt;- edge.betweenness(floG1, directed = FALSE) ## edge betweenness  
+ebet  
+el &lt;- get.edgelist(floG1)  
+el  
+data.frame(from = el[,1], to = el[,2], betweenness = ebet)
+
+## ----- directed networks -----
+## Let's now look at some directed trade data between countries
+if (!require(SNAData)) {install.packages("SNAData"); require(SNAData)}  ## datasets  
+data(basicGoods)     ## it's a graphNEL object (general object structure for graphs) 
+
+tradenet &lt;- igraph.from.graphNEL(basicGoods)  ## convert it to an igraph object
+
+x11()  
+plot(tradenet, vertex.size = 0, edge.arrow.size = 0.4,  
+     vertex.label.dist = 0.5)
+
+get.adjacency(tradenet)   ## adjacency matrix  
+get.edgelist(tradenet)
+
+## --- Indegree and Outdegree
+## Degree Prestige (same as indegree)
+sort(igraph:::degree(tradenet, mode = c("in")), decreasing = TRUE)  ## indegree (imports)
+
+## Outdegree 
+sort(igraph:::degree(tradenet, mode = c("out")), decreasing = TRUE) ## outdegree (exports)
+
+## --- Centrality/Prestige
+## Centrality as above (takes outgoing edges) 
+sort(closeness(tradenet), decreasing = TRUE)   ## exports  
+## Prestige (takes ingoing edges)
+sort(closeness(tradenet, mode = "in"), decreasing = TRUE)    ## imports
+
+
+##-------------------------- Cohesive Subgroups -------------------------------
+load(url("http://people.fas.harvard.edu/~mair/psych3490/statementsGOP.rda"))  
+
+inspect(gopCorp.unique)   ## 254 statements
+
+inspect(tm_filter(gopCorp.unique, FUN = function(x) any(grep("sanctity", x))))   ## as an example
+
+##--- re-organize the data as edge list
+gopCorp.unique1 &lt;- tm_map(gopCorp.unique, tolower)  
+mystopwords &lt;- c("beleive", "shld", "1", "-", "wenot", "conservatismthe", "etc", "im",  
+                 "fatherthe", "conservativebelieve", "governmentprolife2nd",
+                 "amendmentand", "valuessmall", "ive", "4", "familyrepublican",
+                 "-government", "1st", "believe", "belive", "still", "dont", 
+                 "want","seen", "b", "w","can")
+statementsGOP &lt;- Corpus(VectorSource(lapply(gopCorp.unique1, removeWords,  
+                                            c(mystopwords, stopwords("english")))))
+slen &lt;- unlist(tm_map(statementsGOP, function(tf) sum(termFreq(tf))))  ## statement length  
+statementsGOP &lt;- statementsGOP[which(slen &gt; 1)]                        ## select the statements with more than 1 word  
+statementsGOP
+
+## function to get pairwise word structure suited for directed network graph
+textsna &lt;- function(str1) {  
+  splitState &lt;- scan_tokenizer(str1)
+  indmat &lt;- matrix(c(1, rep(2:length(splitState), each = 2)), ncol = 2, 
+                   nrow = (length(splitState) - 1))
+  matrix(splitState[indmat], ncol = 2, byrow = TRUE)
+}  
+statementPairs &lt;- do.call(rbind, lapply(statementsGOP, textsna))   ## warnings can be ignored
+
+statementsGOP[[1]]  
+statementPairs[1:11,]   ## in row 11 the 2nd statement starts  
+## ----- end data preparation
+
+## ------ create network and produce network plot
+statementGraph &lt;- graph.edgelist(statementPairs, directed = TRUE) ## make a graph with each row entry as a from-to vertex and an edge  
+E(statementGraph)$weight &lt;- count.multiple(statementGraph)        ## edge frequencies -- count how often an edge has exactly the same tail and edge vertices  
+statementGraph &lt;- simplify(statementGraph, edge.attr.comb =  
+                             list(weight = max, name = "concat", "ignore") ) ## keep multiplicity as edges
+E(statementGraph)$weight
+
+set.seed(123)  
+ly &lt;- layout.fruchterman.reingold(statementGraph)    ## define layout (more concentric)  
+## ly &lt;- layout.kamada.kawai(statementGraph)         ## more branches going out of the center
+
+
+x11()  
+plot(statementGraph, layout = ly, vertex.size = 2, edge.color = "lightgray",  
+     edge.arrow.size = 0.05, edge.curved = FALSE, 
+     vertex.label = NA, 
+     rescale = FALSE, 
+     xlim = c(-530, 630), ylim = c(-440, 600),
+     main= "Republican Statements (Large Communities)", asp = 0,
+     margin = -1)
+
+
+##--------- compute cliques ------------
+cliqList &lt;- cliques(statementGraph, min = 4)   ## find and all cliques (at least 4 nodes)  
+cliqList                   ## returns the node index only  
+V(statementGraph)$name           ## gives the names  
+cliqlistN &lt;- lapply(cliqList, function(xx) {  
+  V(statementGraph)$name[xx]
+})
+cliqlistN
+
+## let's extract the largest clique and produce a plot
+cliqLarge &lt;- largest.cliques(statementGraph)  
+cliqLarge  
+statementGraphSub &lt;- induced.subgraph(statementGraph, cliqLarge[[1]])  
+x11()  
+plot(statementGraphSub, vertex.size = 2, edge.color = "gray",  
+     vertex.color= "black", vertex.label.color = "blue",
+     edge.arrow.size = 1, edge.curved = FALSE, edge.width = E(statementGraphSub)$weight,
+     vertex.label.dist = 0.5, vertex.label.cex = 0.8, vertex.label.font = 2)
+
+
+
+## ------ compute communities ---------
+## A nice blog entry that decribes various community approaches can be found here:
+## browseURL("http://stackoverflow.com/questions/9471906/what-are-the-differences-between-community-detection-algorithms-in-igraph")
+
+## We use the wakltrap algorthim
+xc &lt;- walktrap.community(statementGraph, weights = E(statementGraph)$weight, step = 6)   ## very quick  
+membership(xc)        ## gives the community membership for each node
+
+edgeList &lt;- tapply(seq_along(membership(xc)), membership(xc), function(xx) xx) ## communities without labels  
+edgeList                                ## communities as list (containing node index)  
+comList &lt;- tapply(membership(xc), membership(xc), names)  
+comList                                 ## communities as list (containing node names)  
+length(comList)                         ## number of communities  
+comsize &lt;- sapply(comList, length)  
+table(comsize)  
+barplot(table(comsize), main = "Community Size")   ## frequency distribution of community sizes
+
+bigComIndex &lt;- which(comsize &gt; 20) ## big communities (having more than 20 nodes)  
+bigComIndex  
+comList[bigComIndex]
+
+coms3 &lt;- edgeList[bigComIndex[[1]]]    ## pull out first community  
+coms4 &lt;- edgeList[bigComIndex[[3]]]    ## pull out third community
+
+
+## ------- produce a fancy plot: full network, big communities added
+x11()  
+vcolo &lt;- c(hcl(h=0,35,60),hcl(h=72,c=35,l=60),hcl(h=144,c=35,l=60),hcl(h=216,c=35,l=60),hcl(h=320,c=35,l=60))  
+op &lt;- par(mar = c(1,2,1,1))  
+layout(matrix(c(1,1,2,3), 2, 2, byrow = TRUE))  
+plot(statementGraph, layout = ly, vertex.size = 2, edge.color = "lightgray",  
+     edge.arrow.size = 0.05, edge.curved = FALSE, 
+     vertex.label = NA, 
+     rescale = FALSE, 
+     xlim = c(-530, 630), ylim = c(-440, 600),
+     main= "Republican Statements (Large Communities)", asp = 0,
+     margin = -1)
+comGraphBig1 &lt;- induced.subgraph(statementGraph, coms3[[1]])  
+ly1 &lt;- ly[unlist(coms3[[1]]),]  
+plot(comGraphBig1, layout = ly1, vertex.size = 3, edge.color = vcolo[2],  
+     edge.arrow.size = 0.2, edge.curved = FALSE,  vertex.label = NA, 
+     vertex.label.dist = 0, vertex.label.cex = 0.8, vertex.label.font = 2,
+     rescale = FALSE, add=TRUE, vertex.color=vcolo[2],vertex.frame.color=vcolo[2],vertex.label.color=vcolo[2])
+comGraphBig2 &lt;- induced.subgraph(statementGraph, coms4[[1]])  
+ly1 &lt;- ly[unlist(coms4[[1]]),]  
+plot(comGraphBig2, layout = ly1, vertex.size = 3, edge.color = vcolo[3],  
+     edge.arrow.size = 0.2, edge.curved = FALSE,  vertex.label = NA, 
+     vertex.label.dist = 0, vertex.label.cex = 0.8, vertex.label.font = 2,
+     rescale = FALSE, add=TRUE, vertex.color=vcolo[3],vertex.frame.color=vcolo[3],vertex.label.color=vcolo[3])
+op2 &lt;- par(mar = c(4,1,1,1))  
+colo &lt;- c(hcl(72,35,40),hcl(72,35,80))  
+comGraphBig1 &lt;- induced.subgraph(statementGraph, unlist(edgeList[bigComIndex[1]]))  
+ly1 &lt;- ly[unlist(edgeList[bigComIndex[1]]),]  
+plot(comGraphBig1, layout = ly1, vertex.size = 2, edge.color = colo[2],  
+     vertex.color=colo[1],vertex.label.color=colo[1],
+     edge.arrow.size = 0.20, edge.curved = FALSE, edge.width = E(comGraphBig1)$weight/2,
+     vertex.label.dist = 0, vertex.label.cex = 0.8, vertex.label.font = 2,
+     rescale = FALSE, xlim=range(ly1[,1]), ylim=range(ly1[,2]))
+colo &lt;- c(hcl(144,35,40),hcl(144,35,80))  
+comGraphBig2 &lt;- induced.subgraph(statementGraph, unlist(edgeList[bigComIndex[3]]))  
+ly1 &lt;- ly[unlist(edgeList[bigComIndex[3]]),]  
+plot(comGraphBig2, layout = ly1, vertex.size = 2, edge.color = colo[2],  
+     vertex.color=colo[1],vertex.label.color=colo[1],
+     edge.arrow.size = 0.20, edge.curved = FALSE, edge.width = E(comGraphBig2)$weight/2,
+     vertex.label.dist = 0, vertex.label.cex = 0.8, vertex.label.font = 2,
+     rescale = FALSE, xlim=range(ly1[,1]), ylim=range(ly1[,2]))
+par(op)  
+par(op2)  
+</code></pre>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+                <h4><a href="http://localhost:2368/author/vikas/">Vikas Gupta</a></h4>
+
+                    <p>Read <a href="http://localhost:2368/author/vikas/">more posts</a> by this author.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="icon-twitter" href="https://twitter.com/share?text=Social%20Network%20analysis&amp;url=http://localhost:2368/social-network-analysis/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:2368/social-network-analysis/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://localhost:2368/social-network-analysis/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+    </article>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="../">Data Science and Machine Learning</a> © 2014</section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <script src="../public/jquery.js?v=7c0c3ad0b3"></script>
+
+    <script type="text/javascript" src="../assets/js/jquery.fitvids.js?v=7c0c3ad0b3"></script>
+    <script type="text/javascript" src="../assets/js/index.js?v=7c0c3ad0b3"></script>
+
+</body>

@@ -1,0 +1,783 @@
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Statistical text processing</title>
+    <meta name="description" content="">
+
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="../favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="../assets/css/screen.css?v=7c0c3ad0b3">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic%7COpen+Sans:700,400">
+
+    <link rel="canonical" href="index.html">
+    
+    <meta property="og:site_name" content="Data Science and Machine Learning">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Statistical text processing">
+    <meta property="og:description" content="Source - http://www.r-datacollection.com/materials/ch-10-textmining/ch-10-textmining.r Statistical Text Processing # load packages library(RCurl)   library(XML)   library(stringr)   library(tm)   library(SnowballC)   library(RWeka)   library(RTextTools)   library(topicmodels)   10.1 The running example: Classifying press releases of...">
+    <meta property="og:url" content="http://localhost:2368/statistical-text-processing/">
+    <meta property="article:published_time" content="2014-11-20T08:06:44.225Z">
+    <meta property="article:modified_time" content="2014-11-21T01:51:00.006Z">
+    
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Statistical text processing">
+    <meta name="twitter:description" content="Source - http://www.r-datacollection.com/materials/ch-10-textmining/ch-10-textmining.r Statistical Text Processing # load packages library(RCurl)   library(XML)   library(stringr)   library(tm)   library(SnowballC)   library(RWeka)   library(RTextTools)   library(topicmodels)   10.1 The running example: Classifying press releases of...">
+    <meta name="twitter:url" content="http://localhost:2368/statistical-text-processing/">
+    
+    <script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "publisher": "Data Science and Machine Learning",
+    "author": {
+        "@type": "Person",
+        "name": "Vikas Gupta",
+        "url": "http://localhost:2368/author/vikas",
+        "sameAs": null
+    },
+    "headline": "Statistical text processing",
+    "url": "http://localhost:2368/statistical-text-processing/",
+    "datePublished": "2014-11-20T08:06:44.225Z",
+    "dateModified": "2014-11-21T01:51:00.006Z",
+    "description": "Source - http://www.r-datacollection.com/materials/ch-10-textmining/ch-10-textmining.r Statistical Text Processing # load packages library(RCurl)   library(XML)   library(stringr)   library(tm)   library(SnowballC)   library(RWeka)   library(RTextTools)   library(topicmodels)   10.1 The running example: Classifying press releases of..."
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.5">
+    <link rel="alternate" type="application/rss+xml" title="Data Science and Machine Learning" href="../rss/index.html">
+</head>
+<body class="post-template">
+
+    
+
+
+<header class="main-header post-head no-cover">
+    <nav class="main-nav  clearfix">
+        <a class="back-button icon-arrow-left" href="../">Home</a>
+        <a class="subscribe-button icon-feed" href="../rss/index.rss">Subscribe</a>
+    </nav>
+</header>
+
+<main class="content" role="main">
+
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Statistical text processing</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2014-11-20">20 November 2014</time> 
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>Source - <a href="http://www.r-datacollection.com/materials/ch-10-textmining/ch-10-textmining.r">http://www.r-datacollection.com/materials/ch-10-textmining/ch-10-textmining.r</a></p>
+
+<p>Statistical Text Processing</p>
+
+<pre><code class="language-{r}"># load packages
+library(RCurl)  
+library(XML)  
+library(stringr)  
+library(tm)  
+library(SnowballC)  
+library(RWeka)  
+library(RTextTools)  
+library(topicmodels)  
+</code></pre>
+
+<h6 id="101therunningexampleclassifyingpressreleasesofthebritishgovernment">10.1 The running example: Classifying press releases of the British government</h6>
+
+<p>Downloading all results</p>
+
+<pre><code class="language-r">all_links &lt;- character()  
+new_results &lt;- 'government/announcements?keywords=&amp;announcement_type_option=press-releases&amp;topics[]=all&amp;departments[]=all&amp;world_locations[]=all&amp;from_date=&amp;to_date=01%2F07%2F2010'  
+signatures = system.file("CurlSSL", cainfo = "cacert.pem", package = "RCurl")  
+while(length(new_results) &gt; 0){  
+    new_results &lt;- str_c("https://www.gov.uk/", new_results)
+    results &lt;- getURL(new_results, cainfo = signatures)
+    results_tree &lt;- htmlParse(results)
+    all_links &lt;- c(all_links, xpathSApply(results_tree, "//li[@id]//a", xmlGetAttr, "href"))
+    new_results &lt;- xpathSApply(results_tree, "//nav[@id='show-more-documents']//li[@class='next']//a", xmlGetAttr, "href")
+}
+</code></pre>
+
+<p>Check the entries</p>
+
+<pre><code class="language-r">all_links[1]  
+</code></pre>
+
+<pre><code>## [1] "/government/news/the-turks-and-caicos-islands-good-governance"
+</code></pre>
+
+<pre><code class="language-r">length(all_links)  
+</code></pre>
+
+<pre><code>## [1] 751
+</code></pre>
+
+<p>Download all press releases</p>
+
+<pre><code class="language-r">if (!file.exists("Press_Releases")) dir.create("Press_Releases")  
+for(i in 1:length(all_links)){  
+    url &lt;- str_c("https://www.gov.uk", all_links[i])
+    tmp &lt;- getURL(url, cainfo = signatures)
+    write(tmp, str_c("Press_Releases/", i, ".html"))
+}
+</code></pre>
+
+<p>Check results</p>
+
+<p>Number of files in the directory  </p>
+
+<pre><code class="language-r">length(list.files("Press_Releases"))  
+</code></pre>
+
+<pre><code>## [1] 535
+</code></pre>
+
+<p>First three files.</p>
+
+<pre><code class="language-r">list.files("Press_Releases")[1:3]  
+</code></pre>
+
+<pre><code>## [1] "1.html"   "10.html"  "100.html"
+</code></pre>
+
+<h6 id="102processingtextualdata">10.2 Processing Textual Data</h6>
+
+<h6 id="1021largescaletextoperationsthetmpackage">10.2.1 Large-scale text operations - the tm package</h6>
+
+<p>Get press release  </p>
+
+<pre><code class="language-r">tmp &lt;- readLines("Press_Releases/1.html")  
+tmp &lt;- str_c(tmp, collapse = "") ## Convert to single string  
+tmp &lt;- htmlParse(tmp)  
+release &lt;- xpathSApply(tmp, "//div[@class='block-4']", xmlValue)  
+release  
+</code></pre>
+
+<pre><code>## [1] "                  In welcoming Mr Parnell, the Minister spoke of the Government’s wish to build a new dynamic relationship with the Overseas Territories and to see the Turks and Caicos Islands (TCI) on a sustainable and stable footing.  Mr Parnell shared with the Minister his assessment of the current situation in the Territory, covering a range of issues including the economy, investment promotion and elections.  Speaking after the meeting, Henry Bellingham said: “Mr Parnell and I enjoyed a brief but frank exchange on issues of concern to TCI. I look forward to visiting the Turks and Caicos Islands in the future”.   Search the news archive            "
+</code></pre>
+
+<p>Get meta information (organisation and date of publication)  </p>
+
+<pre><code class="language-r">organisation &lt;- xpathSApply(tmp, "//dd[@class='from']", xmlValue)  
+organisation &lt;- xpathSApply(tmp, "//a[@class='organisation-link'][1]", xmlValue)  
+organisation  
+</code></pre>
+
+<pre><code>## [1] "Foreign &amp; Commonwealth Office"
+</code></pre>
+
+<pre><code class="language-r">publication &lt;- xpathSApply(tmp, "//div[@class='inner-heading']/h1", xmlValue)  
+publication  
+</code></pre>
+
+<pre><code>## [1] "The Turks and Caicos Islands: Good Governance"
+</code></pre>
+
+<p>Create a corpus from a vector  </p>
+
+<pre><code class="language-r">release_corpus &lt;- Corpus(VectorSource(release))  
+release_corpus  
+</code></pre>
+
+<pre><code>## A corpus with 1 text document
+</code></pre>
+
+<p>Setting the meta information</p>
+
+<pre><code class="language-r">meta(release_corpus[[1]], "organisation") &lt;- organisation[1]  
+meta(release_corpus[[1]], "publication") &lt;- publication  
+meta(release_corpus[[1]])  
+</code></pre>
+
+<pre><code>## Available meta data pairs are:
+##   Author       : 
+##   DateTimeStamp: 2014-11-21 01:39:41
+##   Description  : 
+##   Heading      : 
+##   ID           : 1
+##   Language     : en
+##   Origin       : 
+## User-defined local meta data pairs are:
+## $organisation
+## [1] "Foreign &amp; Commonwealth Office"
+## 
+## $publication
+## [1] "The Turks and Caicos Islands: Good Governance"
+</code></pre>
+
+<p>Load remaining documents  </p>
+
+<pre><code class="language-r">n &lt;- 1  
+for(i in 2:length(list.files("Press_Releases/"))){  
+    tmp &lt;- readLines(str_c("Press_Releases/", i, ".html"))
+    tmp &lt;- str_c(tmp, collapse = "")
+    tmp &lt;- htmlParse(tmp)
+    release &lt;- xpathSApply(tmp, "//div[@class='block-4']", xmlValue)
+    organisation &lt;- xpathSApply(tmp, "//dd[@class='from']", xmlValue)
+    publication &lt;- xpathSApply(tmp, "//div[@class='inner-heading']/h1", xmlValue)
+    if(length(release) != 0){
+        n &lt;- n + 1
+        #tmp_corpus &lt;- Corpus(VectorSource(release))
+        release_corpus[n] &lt;- Corpus(VectorSource(release))
+        meta(release_corpus[[n]], "organisation") &lt;- organisation[1]
+        meta(release_corpus[[n]], "publication") &lt;- publication
+    }
+}
+release_corpus  
+</code></pre>
+
+<pre><code>## A corpus with 545 text documents
+</code></pre>
+
+<p>Inspect meta data <br>
+<code>prescindMeta</code> is removed in <code>tm 0.6</code></p>
+
+<pre><code class="language-r">meta_data &lt;- prescindMeta(release_corpus, c("organisation", "publication"))  
+table(as.character(meta_data[, "organisation"]))  
+</code></pre>
+
+<pre><code>## 
+##                                   Cabinet Office 
+##                                               18 
+##     Department for Business, Innovation &amp; Skills 
+##                                               49 
+##  Department for Communities and Local Government 
+##                                               15 
+##            Department for Culture, Media &amp; Sport 
+##                                               11 
+##                         Department for Education 
+##                                                3 
+## Department for Environment, Food &amp; Rural Affairs 
+##                                               27 
+##                         Department for Transport 
+##                                               13 
+##                 Department for Work and Pensions 
+##                                               14 
+##            Department of Energy &amp; Climate Change 
+##                                               14 
+##                   Deputy Prime Minister's Office 
+##                                                3 
+##              Driver and Vehicle Licensing Agency 
+##                                                4 
+##                    Foreign &amp; Commonwealth Office 
+##                                              151 
+##                                      HM Treasury 
+##                                               10 
+##                                      Home Office 
+##                                                8 
+##                              Ministry of Defence 
+##                                              118 
+##       Prime Minister's Office, 10 Downing Street 
+##                                               48 
+##                                  Scotland Office 
+##                                                9 
+##             Vehicle and Operator Services Agency 
+##                                                4 
+##                                     Wales Office 
+##                                               26
+</code></pre>
+
+<p>Filtering the corpus</p>
+
+<pre><code class="language-r">release_corpus  
+release_corpus &lt;- release_corpus[sFilter(release_corpus, "  
+                                        organisation == 'Department for Business, Innovation &amp; Skills' |
+                                        organisation == 'Department for Communities and Local Government' |
+                                        organisation == 'Department for Environment, Food &amp; Rural Affairs' |
+                                        organisation == 'Foreign &amp; Commonwealth Office' |
+                                        organisation == 'Ministry of Defence' |
+                                        organisation == 'Wales Office'")]
+release_corpus  
+</code></pre>
+
+<pre><code class="language-r">afgh &lt;- tm_filter(release_corpus, FUN = function(x) any(str_detect(x, "Afghanistan")))  
+afgh  
+</code></pre>
+
+<pre><code>## A corpus with 101 text documents
+</code></pre>
+
+<h5 id="1022buildingatermdocumentmatrix">10.2.2 Building a term-document matrix</h5>
+
+<pre><code class="language-r">tdm &lt;- TermDocumentMatrix(release_corpus)  
+tdm  
+</code></pre>
+
+<pre><code>## A term-document matrix (25165 terms, 545 documents)
+## 
+## Non-/sparse entries: 111988/13602937
+## Sparsity           : 99%
+## Maximal term length: 111 
+## Weighting          : term frequency (tf)
+</code></pre>
+
+<h5 id="1023datacleansing">10.2.3 Data cleansing</h5>
+
+<p>Remove numbers</p>
+
+<pre><code class="language-r">release_corpus &lt;- tm_map(release_corpus, removeNumbers)  
+</code></pre>
+
+<p>Remove punctuation</p>
+
+<pre><code class="language-r">release_corpus &lt;- tm_map(release_corpus, str_replace_all, pattern = "[[:punct:]]", replacement = " ")  
+</code></pre>
+
+<p>Remove stopwords</p>
+
+<pre><code class="language-r">length(stopwords("en"))  
+</code></pre>
+
+<pre><code>## [1] 174
+</code></pre>
+
+<pre><code class="language-r">stopwords("en")[1:10]  
+</code></pre>
+
+<pre><code>##  [1] "i"         "me"        "my"        "myself"    "we"       
+##  [6] "our"       "ours"      "ourselves" "you"       "your"
+</code></pre>
+
+<pre><code class="language-r">release_corpus &lt;- tm_map(release_corpus, removeWords, words = stopwords("en"))  
+</code></pre>
+
+<p>Convert to lower case</p>
+
+<pre><code class="language-r">release_corpus &lt;- tm_map(release_corpus, tolower)  
+</code></pre>
+
+<p>Stem documents</p>
+
+<pre><code class="language-r">release_corpus &lt;- tm_map(release_corpus, stemDocument)  
+</code></pre>
+
+<h6 id="1024sparsityandngrams">10.2.4 Sparsity and n-grams</h6>
+
+<p>Create TermDocumentMatrix</p>
+
+<pre><code class="language-r">tdm &lt;- TermDocumentMatrix(release_corpus)  
+tdm  
+</code></pre>
+
+<pre><code>## A term-document matrix (8974 terms, 545 documents)
+## 
+## Non-/sparse entries: 82437/4808393
+## Sparsity           : 98%
+## Maximal term length: 34 
+## Weighting          : term frequency (tf)
+</code></pre>
+
+<p>Remove sparse terms</p>
+
+<pre><code class="language-r">tdm &lt;- removeSparseTerms(tdm, 1-(10/length(release_corpus)))  
+tdm  
+</code></pre>
+
+<pre><code>## A term-document matrix (1587 terms, 545 documents)
+## 
+## Non-/sparse entries: 65410/799505
+## Sparsity           : 92%
+## Maximal term length: 22 
+## Weighting          : term frequency (tf)
+</code></pre>
+
+<p>Create Bigrams</p>
+
+<p>Fix - <a href="http://stackoverflow.com/a/20251039">http://stackoverflow.com/a/20251039</a></p>
+
+<pre><code class="language-r"># Sets the default number of threads to use
+options(mc.cores=1)  
+</code></pre>
+
+<pre><code class="language-r">BigramTokenizer &lt;- function(x){  
+    NGramTokenizer(x, Weka_control(min = 2, max = 2))
+}
+tdm_bigram &lt;- TermDocumentMatrix(release_corpus, control = list(tokenize = BigramTokenizer))  
+tdm_bigram  
+</code></pre>
+
+<pre><code>## A term-document matrix (95648 terms, 545 documents)
+## 
+## Non-/sparse entries: 133515/51994645
+## Sparsity           : 100%
+## Maximal term length: 39 
+## Weighting          : term frequency (tf)
+</code></pre>
+
+<p>Find associations</p>
+
+<pre><code class="language-r">findAssocs(tdm, "nuclear", .7)  
+</code></pre>
+
+<pre><code>##        nuclear
+## weapon    0.74
+## treati    0.71
+</code></pre>
+
+<h6 id="103supervisedlearningtechniques">10.3 Supervised Learning Techniques</h6>
+
+<h6 id="1035applicationgovernemntpressreleases">10.3.5 Application: Governemnt press releases</h6>
+
+<pre><code class="language-r">dtm &lt;- DocumentTermMatrix(release_corpus)  
+dtm &lt;- removeSparseTerms(dtm, 1-(10/length(release_corpus)))  
+dtm  
+</code></pre>
+
+<pre><code>## A document-term matrix (545 documents, 1587 terms)
+## 
+## Non-/sparse entries: 65410/799505
+## Sparsity           : 92%
+## Maximal term length: 22 
+## Weighting          : term frequency (tf)
+</code></pre>
+
+<p>Labels</p>
+
+<pre><code class="language-r">org_labels &lt;- unlist(prescindMeta(release_corpus, "organisation")[,2])  
+org_labels[1:3]  
+</code></pre>
+
+<pre><code>## [1] "Foreign &amp; Commonwealth Office"               
+## [2] "Foreign &amp; Commonwealth Office"               
+## [3] "Department for Business, Innovation &amp; Skills"
+</code></pre>
+
+<p>Create container</p>
+
+<pre><code class="language-r">N &lt;- length(org_labels)  
+container &lt;- create_container(  
+    dtm,
+    labels = org_labels,
+    trainSize = 1:250,
+    testSize = 251:N,
+    virgin = F
+)
+slotNames(container)  
+</code></pre>
+
+<pre><code>## [1] "training_matrix"       "classification_matrix" "training_codes"       
+## [4] "testing_codes"         "column_names"          "virgin"
+</code></pre>
+
+<p>Train models</p>
+
+<pre><code class="language-r">svm_model &lt;- train_model(container, "SVM")  
+tree_model &lt;- train_model(container, "TREE")  
+#maxent_model &lt;- train_model(container, "MAXENT")
+</code></pre>
+
+<p>Models</p>
+
+<pre><code class="language-r">svm_model  
+</code></pre>
+
+<pre><code>## 
+## Call:
+## svm.default(x = container@training_matrix, y = container@training_codes, 
+##     kernel = kernel, cost = cost, cross = cross, probability = TRUE, 
+##     method = method)
+## 
+## 
+## Parameters:
+##    SVM-Type:  C-classification 
+##  SVM-Kernel:  radial 
+##        cost:  100 
+##       gamma:  0.0006301197 
+## 
+## Number of Support Vectors:  243
+</code></pre>
+
+<pre><code class="language-r">tree_model  
+</code></pre>
+
+<pre><code>## node), split, n, deviance, yval, (yprob)
+##       * denotes terminal node
+## 
+##   1) root 250 1156.000 Foreign &amp; Commonwealth Office ( 0.052000 0.108000 0.020000 0.020000 0.004000 0.040000 0.020000 0.040000 0.032000 0.008000 0.004000 0.256000 0.024000 0.008000 0.212000 0.092000 0.008000 0.004000 0.048000 )  
+##     2) X952 &lt; 0.5 171  602.600 Foreign &amp; Commonwealth Office ( 0.005848 0.046784 0.005848 0.005848 0.000000 0.040936 0.005848 0.000000 0.035088 0.005848 0.005848 0.362573 0.000000 0.000000 0.304094 0.093567 0.011696 0.000000 0.070175 )  
+##       4) X981 &lt; 0.5 120  430.100 Foreign &amp; Commonwealth Office ( 0.008333 0.066667 0.008333 0.008333 0.000000 0.058333 0.008333 0.000000 0.033333 0.008333 0.000000 0.466667 0.000000 0.000000 0.091667 0.125000 0.016667 0.000000 0.100000 )  
+##         8) X1047 &lt; 2 107  359.600 Foreign &amp; Commonwealth Office ( 0.009346 0.074766 0.009346 0.009346 0.000000 0.065421 0.009346 0.000000 0.037383 0.009346 0.000000 0.523364 0.000000 0.000000 0.102804 0.018692 0.018692 0.000000 0.112150 )  
+##          16) X1543 &lt; 0.5 97  304.000 Foreign &amp; Commonwealth Office ( 0.010309 0.082474 0.010309 0.010309 0.000000 0.072165 0.010309 0.000000 0.041237 0.010309 0.000000 0.577320 0.000000 0.000000 0.113402 0.020619 0.020619 0.000000 0.020619 )  
+##            32) X586 &lt; 0.5 66  257.600 Foreign &amp; Commonwealth Office ( 0.015152 0.121212 0.015152 0.015152 0.000000 0.106061 0.015152 0.000000 0.060606 0.015152 0.000000 0.393939 0.000000 0.000000 0.151515 0.030303 0.030303 0.000000 0.030303 )  
+##              64) X1012 &lt; 0.5 40  137.800 Foreign &amp; Commonwealth Office ( 0.000000 0.200000 0.025000 0.025000 0.000000 0.025000 0.025000 0.000000 0.075000 0.025000 0.000000 0.475000 0.000000 0.000000 0.050000 0.025000 0.000000 0.000000 0.050000 )  
+##               128) X862 &lt; 0.5 28   79.180 Foreign &amp; Commonwealth Office ( 0.000000 0.071429 0.000000 0.000000 0.000000 0.035714 0.035714 0.000000 0.071429 0.000000 0.000000 0.607143 0.000000 0.000000 0.071429 0.035714 0.000000 0.000000 0.071429 )  
+##                 256) X1439 &lt; 0.5 19   30.650 Foreign &amp; Commonwealth Office ( 0.000000 0.052632 0.000000 0.000000 0.000000 0.052632 0.000000 0.000000 0.052632 0.000000 0.000000 0.789474 0.000000 0.000000 0.000000 0.052632 0.000000 0.000000 0.000000 ) *
+##                 257) X1439 &gt; 0.5 9   31.230 Ministry of Defence ( 0.000000 0.111111 0.000000 0.000000 0.000000 0.000000 0.111111 0.000000 0.111111 0.000000 0.000000 0.222222 0.000000 0.000000 0.222222 0.000000 0.000000 0.000000 0.222222 ) *
+##               129) X862 &gt; 0.5 12   35.360 Department for Business, Innovation &amp; Skills ( 0.000000 0.500000 0.083333 0.083333 0.000000 0.000000 0.000000 0.000000 0.083333 0.083333 0.000000 0.166667 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 ) *
+##              65) X1012 &gt; 0.5 26   84.630 Ministry of Defence ( 0.038462 0.000000 0.000000 0.000000 0.000000 0.230769 0.000000 0.000000 0.038462 0.000000 0.000000 0.269231 0.000000 0.000000 0.307692 0.038462 0.076923 0.000000 0.000000 )  
+##               130) X1112 &lt; 0.5 19   44.780 Ministry of Defence ( 0.000000 0.000000 0.000000 0.000000 0.000000 0.157895 0.000000 0.000000 0.000000 0.000000 0.000000 0.368421 0.000000 0.000000 0.421053 0.000000 0.052632 0.000000 0.000000 ) *
+##               131) X1112 &gt; 0.5 7   20.650 Department for Environment, Food &amp; Rural Affairs ( 0.142857 0.000000 0.000000 0.000000 0.000000 0.428571 0.000000 0.000000 0.142857 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.142857 0.142857 0.000000 0.000000 ) *
+##            33) X586 &gt; 0.5 31    8.835 Foreign &amp; Commonwealth Office ( 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.967742 0.000000 0.000000 0.032258 0.000000 0.000000 0.000000 0.000000 ) *
+##          17) X1543 &gt; 0.5 10    0.000 Wales Office ( 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 ) *
+##         9) X1047 &gt; 2 13    0.000 Prime Minister's Office, 10 Downing Street ( 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 ) *
+##       5) X981 &gt; 0.5 51   72.260 Ministry of Defence ( 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.039216 0.000000 0.019608 0.117647 0.000000 0.000000 0.803922 0.019608 0.000000 0.000000 0.000000 )  
+##        10) X1234 &lt; 0.5 6   14.910 Foreign &amp; Commonwealth Office ( 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.166667 0.000000 0.166667 0.500000 0.000000 0.000000 0.166667 0.000000 0.000000 0.000000 0.000000 ) *
+##        11) X1234 &gt; 0.5 45   40.900 Ministry of Defence ( 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.022222 0.000000 0.000000 0.066667 0.000000 0.000000 0.888889 0.022222 0.000000 0.000000 0.000000 ) *
+##     3) X952 &gt; 0.5 79  375.900 Department for Business, Innovation &amp; Skills ( 0.151899 0.240506 0.050633 0.050633 0.012658 0.037975 0.050633 0.126582 0.025316 0.012658 0.000000 0.025316 0.075949 0.025316 0.012658 0.088608 0.000000 0.012658 0.000000 )  
+##       6) X1071 &lt; 0.5 35  146.800 Department for Work and Pensions ( 0.114286 0.028571 0.057143 0.000000 0.028571 0.085714 0.000000 0.285714 0.057143 0.000000 0.000000 0.057143 0.000000 0.057143 0.028571 0.200000 0.000000 0.000000 0.000000 )  
+##        12) X441 &lt; 0.5 25  104.900 Prime Minister's Office, 10 Downing Street ( 0.160000 0.040000 0.080000 0.000000 0.040000 0.120000 0.000000 0.000000 0.080000 0.000000 0.000000 0.080000 0.000000 0.080000 0.040000 0.280000 0.000000 0.000000 0.000000 )  
+##          24) X1234 &lt; 0.5 8    6.028 Prime Minister's Office, 10 Downing Street ( 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.125000 0.000000 0.000000 0.000000 0.875000 0.000000 0.000000 0.000000 ) *
+##          25) X1234 &gt; 0.5 17   70.330 Cabinet Office ( 0.235294 0.058824 0.117647 0.000000 0.058824 0.176471 0.000000 0.000000 0.117647 0.000000 0.000000 0.058824 0.000000 0.117647 0.058824 0.000000 0.000000 0.000000 0.000000 )  
+##            50) X131 &lt; 0.5 11   36.120 Cabinet Office ( 0.363636 0.090909 0.000000 0.000000 0.090909 0.000000 0.000000 0.000000 0.181818 0.000000 0.000000 0.000000 0.000000 0.181818 0.090909 0.000000 0.000000 0.000000 0.000000 )  
+##             100) X337 &lt; 0.5 6   15.960 Department of Energy &amp; Climate Change ( 0.000000 0.166667 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.333333 0.000000 0.000000 0.000000 0.000000 0.333333 0.166667 0.000000 0.000000 0.000000 0.000000 ) *
+##             101) X337 &gt; 0.5 5    5.004 Cabinet Office ( 0.800000 0.000000 0.000000 0.000000 0.200000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 ) *
+##            51) X131 &gt; 0.5 6   12.140 Department for Environment, Food &amp; Rural Affairs ( 0.000000 0.000000 0.333333 0.000000 0.000000 0.500000 0.000000 0.000000 0.000000 0.000000 0.000000 0.166667 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 ) *
+##        13) X441 &gt; 0.5 10    0.000 Department for Work and Pensions ( 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 ) *
+##       7) X1071 &gt; 0.5 44  149.200 Department for Business, Innovation &amp; Skills ( 0.181818 0.409091 0.045455 0.090909 0.000000 0.000000 0.090909 0.000000 0.000000 0.022727 0.000000 0.000000 0.136364 0.000000 0.000000 0.000000 0.000000 0.022727 0.000000 )  
+##        14) X167 &lt; 1 26   89.700 Cabinet Office ( 0.307692 0.000000 0.076923 0.153846 0.000000 0.000000 0.153846 0.000000 0.000000 0.038462 0.000000 0.000000 0.230769 0.000000 0.000000 0.000000 0.000000 0.038462 0.000000 )  
+##          28) X452 &lt; 0.5 14   29.530 Cabinet Office ( 0.571429 0.000000 0.000000 0.000000 0.000000 0.000000 0.285714 0.000000 0.000000 0.071429 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.071429 0.000000 )  
+##            56) X194 &lt; 1.5 6   10.410 Department for Transport ( 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.666667 0.000000 0.000000 0.166667 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.166667 0.000000 ) *
+##            57) X194 &gt; 1.5 8    0.000 Cabinet Office ( 1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 ) *
+##          29) X452 &gt; 0.5 12   24.270 HM Treasury ( 0.000000 0.000000 0.166667 0.333333 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.500000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 )  
+##            58) X23 &lt; 1 6    7.638 Department for Culture, Media &amp; Sport ( 0.000000 0.000000 0.333333 0.666667 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 ) *
+##            59) X23 &gt; 1 6    0.000 HM Treasury ( 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 ) *
+##        15) X167 &gt; 1 18    0.000 Department for Business, Innovation &amp; Skills ( 0.000000 1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 ) *
+</code></pre>
+
+<p>Classify models</p>
+
+<pre><code class="language-r">svm_out &lt;- classify_model(container, svm_model)  
+tree_out &lt;- classify_model(container, tree_model)  
+#maxent_out &lt;- classify_model(container, maxent_model)
+</code></pre>
+
+<pre><code class="language-r">head(svm_out)  
+</code></pre>
+
+<pre><code>##                                      SVM_LABEL  SVM_PROB
+## 1   Prime Minister's Office, 10 Downing Street 0.5857502
+## 2                Foreign &amp; Commonwealth Office 0.3743644
+## 3                Foreign &amp; Commonwealth Office 0.8146157
+## 4 Department for Business, Innovation &amp; Skills 0.2582674
+## 5                          Ministry of Defence 0.8829338
+## 6                          Ministry of Defence 0.7160151
+</code></pre>
+
+<pre><code class="language-r">head(tree_out)  
+</code></pre>
+
+<pre><code>##                                   TREE_LABEL TREE_PROB
+## 1 Prime Minister's Office, 10 Downing Street 1.0000000
+## 2              Foreign &amp; Commonwealth Office 0.7894737
+## 3              Foreign &amp; Commonwealth Office 0.5000000
+## 4              Foreign &amp; Commonwealth Office 0.7894737
+## 5                        Ministry of Defence 0.8888889
+## 6                        Ministry of Defence 0.8888889
+</code></pre>
+
+<pre><code class="language-r">#head(maxent_out)
+</code></pre>
+
+<p>Construct data frame with correct labels</p>
+
+<pre><code class="language-r">labels_out &lt;- data.frame(  
+    correct_label = org_labels[251:N],
+    svm = as.character(svm_out[,1]),
+    tree = as.character(tree_out[,1]),
+    #maxent = as.character(maxent_out[,1]),
+    stringsAsFactors = F
+)
+</code></pre>
+
+<p>SVM performance</p>
+
+<pre><code class="language-r">table(labels_out[,1] == labels_out[,2])  
+</code></pre>
+
+<pre><code>## 
+## FALSE  TRUE 
+##    99   196
+</code></pre>
+
+<p>Random forest performance</p>
+
+<pre><code class="language-r">table(labels_out[,1] == labels_out[,3])  
+</code></pre>
+
+<pre><code>## 
+## FALSE  TRUE 
+##   126   169
+</code></pre>
+
+<p>Maximum entropy performance</p>
+
+<pre><code class="language-r">#table(labels_out[,1] == labels_out[,4])
+</code></pre>
+
+<pre><code class="language-r">prop.table(table(labels_out[,1] == labels_out[,3]))  
+</code></pre>
+
+<pre><code>## 
+##     FALSE      TRUE 
+## 0.4271186 0.5728814
+</code></pre>
+
+<h5 id="104unsupervisedlearningtechniques">10.4 Unsupervised Learning Techniques</h5>
+
+<h5 id="1042applicationgovernmentpressreleases">10.4.2 Application: Government press releases</h5>
+
+<p>Hierarchical clustering <br>
+Create shortened corpus</p>
+
+<pre><code class="language-r">short_corpus &lt;- release_corpus[c(  
+    which(tm_index(
+        release_corpus,
+        FUN = sFilter,
+        s = "organisation == 'Ministry of Defence'"))[1:20],
+    which(tm_index(
+        release_corpus,
+        FUN = sFilter,
+        s = "organisation == 'Wales Office'"))[1:20],
+    which(tm_index(
+        release_corpus,
+        FUN = sFilter,
+        s = "organisation == 'Department for Environment, Food &amp; Rural Affairs'"))[1:20]
+)]
+short_corpus  
+</code></pre>
+
+<pre><code>## A corpus with 60 text documents
+</code></pre>
+
+<pre><code class="language-r">table(as.character(prescindMeta(short_corpus, "organisation")[,2]))  
+</code></pre>
+
+<pre><code>## 
+## Department for Environment, Food &amp; Rural Affairs 
+##                                               20 
+##                              Ministry of Defence 
+##                                               20 
+##                                     Wales Office 
+##                                               20
+</code></pre>
+
+<p>Create shortened Document-Term-Matrix</p>
+
+<pre><code class="language-r">short_dtm &lt;- DocumentTermMatrix(short_corpus)  
+short_dtm &lt;- removeSparseTerms(short_dtm, 1-(5/length(short_corpus)))  
+rownames(short_dtm) &lt;- c(rep("Defence", 20), rep("Wales", 20), rep("Environment", 20))  
+</code></pre>
+
+<p>Create dendrogram</p>
+
+<pre><code class="language-r">dist_dtm &lt;- dist(short_dtm)  
+out &lt;- hclust(dist_dtm, method = "ward")  
+</code></pre>
+
+<pre><code>## The "ward" method has been renamed to "ward.D"; note new "ward.D2"
+</code></pre>
+
+<pre><code class="language-r">plot(out)  
+</code></pre>
+
+<p><img src="../content/images/2014/11/unnamed-chunk-46-1.png" alt=""></p>
+
+<p>Unsupervised classification</p>
+
+<pre><code class="language-r">lda_out &lt;- LDA(dtm, 6)  
+posterior_lda &lt;- posterior(lda_out)  
+lda_topics &lt;- data.frame(t(posterior_lda$topics))  
+</code></pre>
+
+<p>Setting up matrix for mean probabilities</p>
+
+<pre><code class="language-r">mean_topic_matrix &lt;- matrix(  
+    NA,
+    nrow = 6,
+    ncol = 6,
+    dimnames = list(
+        names(table(org_labels)),
+        str_c("Topic_", 1:6)
+    )
+)
+## Filling matrix
+for(i in 1:6){  
+    mean_topic_matrix[i,] apply(lda_topics[, which(org_labels == rownames(mean_topic_matrix)[i])], 1, mean)
+}
+## Outputting rounded matrix
+round(mean_topic_matrix, 2)
+
+# Inspecting associated terms
+terms(lda_out, 10)
+
+# Correlated topic model
+ctm_out &lt;- CTM(dtm, 6)  
+terms(ctm_out, 10)
+
+# Plotting the output
+posterior_ctm &lt;- posterior(ctm_out)  
+ctm_topics &lt;- data.frame(t(posterior_ctm$topics))
+
+par(mfrow = c(2,3), cex.main = .8, pty = "s", mar = c(5, 5, 1, 1))  
+for(topic in 1:2){  
+    for(orga in names(table(org&lt;_labels))){
+        tmp.data &lt;- ctm_topics[topic, org_labels == orga]
+        plot(
+            1:ncol(tmp.data),
+            sort(as.numeric(tmp.data)),
+            type = "l",
+            ylim = c(0, 1),
+            xlab = "Press releases",
+            ylab = str_c("Posterior probability, topic ", topic),
+            main = str_replace(orga, "Department for", "")
+        )
+    }
+}
+</code></pre>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+                <h4><a href="http://localhost:2368/author/vikas/">Vikas Gupta</a></h4>
+
+                    <p>Read <a href="http://localhost:2368/author/vikas/">more posts</a> by this author.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="icon-twitter" href="https://twitter.com/share?text=Statistical%20text%20processing&amp;url=http://localhost:2368/statistical-text-processing/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:2368/statistical-text-processing/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://localhost:2368/statistical-text-processing/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+    </article>
+
+</main>
+
+
+
+    <footer class="site-footer clearfix">
+         <section class="copyright"><a href="../">Data Science and Machine Learning</a> © 2014</section>
+         <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+
+    <script src="../public/jquery.js?v=7c0c3ad0b3"></script>
+
+    <script type="text/javascript" src="../assets/js/jquery.fitvids.js?v=7c0c3ad0b3"></script>
+    <script type="text/javascript" src="../assets/js/index.js?v=7c0c3ad0b3"></script>
+
+</body>
